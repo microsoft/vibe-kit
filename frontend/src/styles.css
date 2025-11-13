@@ -1,0 +1,178 @@
+/* Fluent UI 2 Design Tokens */
+:root {
+  --color-neutral-foreground-1: #242424;
+  --color-neutral-foreground-2: #424242;
+  --color-neutral-foreground-3: #616161;
+  --color-neutral-background-1: #ffffff;
+  --color-neutral-background-2: #f5f5f5;
+  --color-neutral-background-3: #f0f0f0;
+  --color-neutral-stroke-1: #e0e0e0;
+  --color-brand-background-1: #0078d4;
+  --color-brand-background-2: #106ebe;
+  --color-brand-foreground-1: #0078d4;
+  --border-radius-medium: 8px;
+  --border-radius-large: 12px;
+  --spacing-horizontal-xl: 32px;
+  --spacing-horizontal-l: 24px;
+  --spacing-horizontal-m: 16px;
+  --spacing-vertical-xl: 48px;
+  --spacing-vertical-l: 32px;
+  --spacing-vertical-m: 20px;
+  --spacing-vertical-s: 12px;
+  --font-family-base: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-hero-900: 2.5rem;
+  --font-size-base-300: 0.875rem;
+  --font-weight-semibold: 600;
+  --shadow-8: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+.landing-root {
+  font-family: var(--font-family-base);
+  color: var(--color-neutral-foreground-1);
+  background: var(--color-neutral-background-1);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  line-height: 1.4;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-vertical-xl) var(--spacing-horizontal-xl);
+  background: linear-gradient(135deg, rgba(0, 120, 212, 0.03) 0%, rgba(0, 120, 212, 0.08) 100%);
+  border-bottom: 1px solid var(--color-neutral-stroke-1);
+}
+
+.hero-content h1 {
+  margin: 0 0 var(--spacing-vertical-s) 0;
+  font-size: var(--font-size-hero-900);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.tagline {
+  margin: 0;
+  color: var(--color-neutral-foreground-2);
+  text-align: center;
+  max-width: 600px;
+}
+
+.btn {
+  padding: 10px var(--spacing-horizontal-m);
+  border-radius: var(--border-radius-medium);
+  border: none;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base-300);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn.primary {
+  background: var(--color-brand-background-1);
+  color: var(--color-neutral-background-1);
+}
+
+.btn.primary:hover {
+  background: var(--color-brand-background-2);
+}
+
+.btn:not(.primary) {
+  background: var(--color-neutral-background-2);
+  color: var(--color-neutral-foreground-1);
+  border: 1px solid var(--color-neutral-stroke-1);
+}
+
+.btn:not(.primary):hover {
+  background: var(--color-neutral-background-3);
+}
+
+
+.content {
+  padding: var(--spacing-vertical-l) var(--spacing-horizontal-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-horizontal-l);
+  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.card {
+  background: var(--color-neutral-background-1);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-vertical-m) var(--spacing-vertical-m) var(--spacing-vertical-m) var(--spacing-vertical-m);
+  border: 1px solid var(--color-neutral-stroke-1);
+  box-shadow: var(--shadow-8);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16), 0 0 4px rgba(0, 0, 0, 0.12);
+}
+
+.card h2 {
+  margin: 0 0 var(--spacing-vertical-m) 0;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-foreground-1);
+}
+
+.card ul {
+  margin: 0;
+  padding-left: var(--spacing-horizontal-m);
+}
+
+.card li {
+  margin-bottom: var(--spacing-vertical-s);
+}
+
+.card a {
+  color: var(--color-brand-foreground-1);
+  text-decoration: none;
+}
+
+.card a:hover {
+  text-decoration: underline;
+}
+
+.muted {
+  color: var(--color-neutral-foreground-3);
+  font-size: var(--font-size-base-300);
+}
+
+.footer {
+  padding: var(--spacing-vertical-m) var(--spacing-horizontal-xl);
+  text-align: center;
+  color: var(--color-neutral-foreground-3);
+  border-top: 1px solid var(--color-neutral-stroke-1);
+  margin-top: auto;
+}
+
+code {
+  background: var(--color-neutral-background-2);
+  color: var(--color-neutral-foreground-1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.85em;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--spacing-vertical-l) var(--spacing-horizontal-m);
+  }
+
+  .content {
+    padding: var(--spacing-vertical-m) var(--spacing-horizontal-m);
+  }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,86 @@
+{
+    "name": "Vibe Kit",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".",
+        "args": {
+            "VARIANT": "3.12-bullseye",
+            "HTTP_PROXY": "${localEnv:HTTP_PROXY}",
+            "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}",
+            "NO_PROXY": "${localEnv:NO_PROXY}"
+        }
+    },
+    // Set up a location for temp files that Windows won't try to index during uv/pnpm package installation
+    "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
+    "workspaceFolder": "/workspaces/vibe-kit",
+    "runArgs": [
+        "--mount=type=tmpfs,target=/tmp",
+        "--mount=type=volume,source=vibe-kit-innovation-kits,target=/workspaces/vibe-kit/.vibe-kit/innovation-kits"
+    ],
+    "features": {
+        "ghcr.io/devcontainers/features/azure-cli:1": {}
+    },
+    "updateRemoteUserUID": true,
+    "remoteUser": "vscode",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-python.debugpy",
+                "ms-toolsai.jupyter",
+                "charliermarsh.ruff",
+                "yzhang.markdown-all-in-one",
+                "redhat.vscode-yaml",
+                "ms-vsliveshare.vsliveshare",
+                "ms-python.isort",
+                "tomoki1207.pdf"
+            ],
+            "settings": {
+                "editor.formatOnSave": true,
+                "python.analysis.typeCheckingMode": "basic",
+                "python.testing.pytestEnabled": true,
+                "python.formatting.provider": "none",
+                "eslint.validate": [
+                    "javascript",
+                    "javascriptreact",
+                    "typescript",
+                    "typescriptreact",
+                    "json"
+                ],
+                "npm.packageManager": "pnpm"
+            }
+        }
+    },
+    "remoteEnv": {
+        "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin",
+        // Keep uv and pnpm caches inside the container filesystem to avoid bind-mount rename issues
+        "UV_CACHE_DIR": "/tmp/uv-cache",
+        "UV_PYTHON": "/usr/local/bin/python3",
+        "UV_LINK_MODE": "copy",
+        "PNPM_STORE_PATH": "/tmp/pnpm-store",
+        "TMPDIR": "/tmp"
+    },
+    "forwardPorts": [
+        3010,
+        8010
+    ],
+    "portsAttributes": {
+        "3010": {
+            "label": "React dev server",
+            "requireLocalPort": true
+        },
+        "8010": {
+            "label": "Python API server",
+            "requireLocalPort": true
+        }
+    },
+    "otherPortsAttributes": {
+        "onAutoForward": "notify"
+    },
+    "postCreateCommand": "bash -lc '.devcontainer/postCreateCommand.sh'"
+}

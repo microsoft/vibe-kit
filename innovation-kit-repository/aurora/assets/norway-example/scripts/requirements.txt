@@ -1,0 +1,12 @@
+numpy>=2.3.0
+xarray>=2025.10.0
+pandas>=2.2.0
+netcdf4>=1.7.0
+h5netcdf>=1.7.0
+
+# For Aurora inference (optional)
+torch>=2.0.0
+microsoft-aurora>=0.2.0
+
+# For visualization (optional)
+matplotlib>=3.5.0

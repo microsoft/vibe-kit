@@ -1,0 +1,42 @@
+[project]
+name = "vibekit-cli"
+version = "0.0.1"
+description = "Vibe Kit CLI helps initialize a Vibe Kit environment and install innovation packs into it."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+keywords = ["cli", "innovation", "innovation-kits", "prototype", "vibekit", "vibe kit", "msresearch", "foundry labs", "Microsoft Research"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License"
+]
+dependencies = [
+  "typer>=0.12.3",
+  "pyyaml>=6.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[project.scripts]
+# Flattened module layout: entry point now references top-level module 'cli'
+vibekit = "cli:app"
+
+[tool.setuptools]
+# Declare standalone modules now that we removed the package directory
+py-modules = ["assets", "cli", "github_repo", "manifests", "repo", "state", "versioning"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]

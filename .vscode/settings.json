@@ -1,0 +1,242 @@
+{
+    // Controls whether code instructions from `.github/copilot-instructions.md` are added to Copilot requests.
+    // Default: true
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    // Whether to enable agentic codesearch when using `#codebase` directly in the chat window.
+    // Default: false
+    "github.copilot.chat.codesearch.enabled": true,
+    // Allow Copilot chat modes (including custom modes) to edit workspace files by default
+    "github.copilot.chat.enableEditTools": true,
+    "github.copilot.chat.allowAgentWorkspaceEdits": true,
+    // Controls how thinking is rendered.
+    //  - collapsed: Thinking parts will be collapsed by default.
+    //  - collapsedPreview: Thinking parts will be expanded first, then collapse once we reach a part that is not thinking.
+    //  - expanded: Thinking parts will be expanded by default.
+    //  - none: Do not show the thinking
+    // Default: "collapsed"
+    "chat.agent.thinkingStyle": "expanded",
+    // Specify location(s) of instructions files (`*.instructions.md`) that can be attached in Chat sessions. [Learn More](https://aka.ms/vscode-ghcp-custom-instructions).
+    // Default: {".github/instructions": true}
+    "chat.instructionsFilesLocations": {
+        ".github/instructions": true,
+        ".vibe-kit/instructions": true,
+    },
+    // Specify location(s) of custom chat mode files (`*.chatmode.md`). [Learn More](https://aka.ms/vscode-ghcp-custom-chat-modes).
+    // Relative paths are resolved from the root folder(s) of your workspace.
+    // Default: {".github/chatmodes": true}
+    "chat.modeFilesLocations": {
+        ".github/chatmodes": true,
+        ".vibe-kit/chatmodes": true,
+    },
+    // Specify location(s) of reusable prompt files (`*.prompt.md`) that can be run in Chat sessions. [Learn More](https://aka.ms/vscode-ghcp-prompt-snippets).
+    // Relative paths are resolved from the root folder(s) of your workspace.
+    // Default: {".github/prompts": true}
+    "chat.promptFilesLocations": {
+        ".github/prompts": true,
+        ".vibe-kit/prompts": true,
+    },
+    // Formatter defaults
+    "[css]": {
+        "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    // Enable agent mode for chat. When this is enabled, agent mode can be activated via the dropdown in the view.
+    // Default: true
+    "chat.agent.enabled": true,
+    // The maximum number of requests to allow Copilot to use per-turn in agent mode. When the limit is reached, Copilot will ask the user to confirm that it should continue.
+    // Default: 25
+    "chat.agent.maxRequests": 1000,
+    // Enable using tools contributed by third-party extensions.
+    // Default: true
+    "chat.extensionTools.enabled": true,
+    // Enables todo lists in chat. This tool allows you to use todo lists in chat.
+    // Default: false (experimental)
+    "chat.todoListTool.enabled": true,
+    // Enables checkpoints in chat. Checkpoints allow you to restore the chat to a previous state.
+    // Disable if you prefer manual control over file edits
+    // Default: true
+    "chat.checkpoints.enabled": true,
+    // Controls whether to show chat checkpoint file changes.
+    // Default: false
+    "chat.checkpoints.showFileChanges": true,
+    // Controls whether the Copilot window should notify the user when a confirmation is needed while the window is not in focus. This includes a window badge as well as notification toast.
+    // Default: true
+    "chat.notifyWindowOnConfirmation": true,
+    // Controls whether related files should be rendered in the chat input.
+    // Default: false
+    "chat.renderRelatedFiles": false,
+    // Open Chat maximized by default when you open this workspace
+    // Options: "default" | "hidden" | "visible" | "maximizedInWorkspace" | "maximized"
+    // Default: "visibleInWorkspace"
+    "workbench.secondarySideBar.defaultVisibility": "maximizedInWorkspace",
+    // Controls whether MCP servers should be automatically started when the chat messages are submitted.
+    //  - never: Never automatically start MCP servers.
+    //  - onlyNew: Only automatically start new MCP servers that have never been run.
+    //  - newAndOutdated: Automatically start new and outdated MCP servers that are not yet running.
+    // Default: "never"
+    "chat.mcp.autostart": "newAndOutdated",
+    // Inline edit behavior for previous prompts; set to "inline" per 1.103 defaults
+    // Other options include: "toolbar"
+    "chat.editRequests": "inline",
+    // Enable math rendering in Chat (KaTeX)
+    "chat.math.enabled": true,
+    // Whether to use the next version of inline chat.
+    // Default: false
+    "inlineChat.enableV2": true,
+    // Controls whether instructions from `AGENTS.MD` file found in a workspace roots are added to all chat requests.
+    // Default: true
+    "chat.useAgentsMdFile": true,
+    // Enable agent-like behavior for inline chat widget in notebooks. Depends on the `inlineChat.enableV2` setting being enabled.
+    // Default: false
+    "inlineChat.notebookAgent": true,
+    // Controls whether to enable AI statistics in the editor. The gauge represents the average amount of code inserted by AI vs manual typing over a 24 hour period.
+    // Default: false
+    "editor.aiStats.enabled": true,
+    // Experimental: use Context7 during #new scaffolding if MCP server is installed
+    "github.copilot.chat.newWorkspace.useContext7": false,
+    // Controls whether to allow auto approval in the run in terminal tool.
+    // Default: true
+    "chat.tools.terminal.enableAutoApprove": true,
+    // A list of commands or regular expressions that control whether the run in terminal tool commands require explicit approval. 
+    // These will be matched against the start of a command. 
+    // A regular expression can be provided by wrapping the string in `/` characters followed by optional flags such as `i` for case-insensitivity.
+    // Set to `true` to automatically approve commands, `false` to always require explicit approval or `null` to unset the value.
+    // Note that these commands and regular expressions are evaluated for every _sub-command_ within the full _command line_, so `foo && bar` for example will need both `foo` and `bar` to match a `true` entry and must not match a `false` entry in order to auto approve. Inline commands are also detected so `echo $(rm file)` will need both `echo $(rm file)` and `rm file` to pass.
+    // An object can be used to match against the full command line instead of matching sub-commands and inline commands, for example `{ approve: false, matchCommandLine: true }`. In order to be auto approved _both_ the sub-command and command line must not be explicitly denied, then _either_ all sub-commands or command line needs to be approved.
+    // Default:
+    //  {
+    // 	"rm": false,
+    // 	"rmdir": false,
+    // 	"del": false,
+    // 	"kill": false,
+    // 	"curl": false,
+    // 	"wget": false,
+    // 	"eval": false,
+    // 	"chmod": false,
+    // 	"chown": false,
+    // 	"/^Remove-Item\\b/i": false
+    // },
+    "chat.tools.terminal.autoApprove": {
+        // Never allow destructive or ambiguous commands without explicit approval
+        "/(^|\\s)(rm|sudo\\s+rm)\\b/": false,
+        "/(^|\\s)(dd|mkfs|diskpart)\\b/": false,
+        "/(^|\\s)(git\\s+reset\\s+--hard)\\b": false,
+        "/(^|\\s)(git\\s+clean\\s+-fdx)\\b/": false,
+        "/(^|\\s)(git\\s+commit)\\b/": false,
+        "/(^|\\s)(shutdown|reboot)\\b/": {
+            "approve": false,
+            "matchCommandLine": true
+        },
+        // Deny destructive Azure operations
+        "/\\baz\\b.*(create|delete|update|remove)\\b/i": false,
+        // Approve common, low‑risk reads and listings to reduce friction
+        "/\\b(git\\s+(status|log|branch|add))\\b/": true,
+        "/\\b(ls|pwd|cat\\s+[^>|&]+)\\b/": true,
+        "/\\becho\\b/": true,
+        // Azure CLI read-only commands:
+        "/\\baz\\b.*(show|list|get)\\b/i": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/\\baz\\b.*get-logs\\b/i": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        // Approve common development command lines
+        "cd": true,
+        "pnpm": true,
+        "curl": true,
+        "source": true,
+        "uvicorn": true,
+        "python3": true,
+        "uv": true,
+        "'PY'": true,
+        "npm": true,
+        "yarn": true,
+        "pip": true,
+        "pip3": true,
+        "node": true,
+        "npx": true,
+        "prettier": true,
+        "eslint": true,
+        "ruff": true,
+        "pytest": true,
+        "jest": true,
+        "black": true,
+        "mypy": true,
+        "flake8": true,
+        "pylint": true,
+        "pre-commit": true,
+        "poetry": true,
+        "pipenv": true,
+        "hatch": true,
+        "tsc": true,
+        "vitest": true,
+        "vite": true,
+        "next": true,
+        "bun": true,
+    },
+    // List of extensions to install upon connection to a remote when already installed locally.
+    "remote.defaultExtensionsIfInstalledLocally": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "openai.chatgpt",
+        "anthropic.claude-code",
+        "codeium.codeium",
+        "saoudrizwan.claude-dev",
+        "blackboxapp.blackboxagent",
+        "google.geminicodeassist"
+    ],
+    // Ensure the workspace uses the project's virtual environment for Python
+    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "material-icon-theme.folders.associations": {
+        ".vibe-kit": "prompts",
+        ".vibekit": "prompts",
+    },
+    // Custom VS Code window colors set by the Peacock extension
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#0a01fb",
+        "activityBar.background": "#0a01fb",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#fe0a01",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "editorGroup.border": "#0a01fb",
+        "panel.border": "#0a01fb",
+        "sash.hoverBorder": "#0a01fb",
+        "sideBar.border": "#0a01fb",
+        "statusBar.background": "#0801c8",
+        "statusBar.border": "#0801c8",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#0a01fb",
+        "statusBarItem.remoteBackground": "#0801c8",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "tab.activeBorder": "#0a01fb",
+        "titleBar.activeBackground": "#0801c8",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.border": "#0801c8",
+        "titleBar.inactiveBackground": "#0801c899",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.remoteColor": "#0801c8",
+}

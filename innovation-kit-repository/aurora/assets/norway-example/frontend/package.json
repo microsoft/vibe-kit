@@ -1,0 +1,27 @@
+{
+  "name": "aurora-norway-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fluentui/react-components": "^9.49.1",
+    "leaflet": "^1.9.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+  "react-leaflet": "^4.2.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.12",
+    "@types/react": "^18.3.6",
+    "@types/react-dom": "^18.3.2",
+    "@vitejs/plugin-react-swc": "^3.6.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.11"
+  }
+}

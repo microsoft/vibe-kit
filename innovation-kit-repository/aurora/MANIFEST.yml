@@ -1,0 +1,67 @@
+# MANIFEST.yml v1.0
+
+kit_info:
+  name: "aurora"
+  display_name: "Aurora Innovation Kit"
+  version: "0.1.3"
+  description: "Earth system forecasting foundation model with 0.1°–0.4° global resolution."
+  created_date: "2025-09-26"
+  last_updated: "2025-11-03"
+
+research_foundation:
+  paper_title: "A foundation model for the Earth system"
+  paper_url: "https://www.nature.com/articles/s41586-025-09005-y"
+  authors: ["Microsoft Research Aurora Team"]
+  publication_venue: "Nature"
+  publication_year: 2025
+  github_repo: "https://github.com/microsoft/aurora"
+
+prototyping:
+  time_to_first_success: "30 minutes"
+  time_to_real_application: "8 hours"
+  primary_domains: ["weather_forecasting", "climate_modeling", "extreme_events"]
+  secondary_domains: ["air_quality", "ocean_modeling", "wildfire_prediction", "energy_management"]
+
+files:
+  core_files:
+    - {file: "INNOVATION_KIT.md", lines: 101, desc: "Innovation Kit overview", time: "5min"}
+    - {file: "docs/quick-start.md", lines: 338, desc: "30-min Norway example tutorial", time: "30min"}
+    - {file: "docs/norway-technical-guide.md", lines: 673, desc: "Deep dive into Aurora inference mechanics", time: "1hr"}
+    - {file: "docs/prototyping-guide.md", lines: 1103, desc: "Customization guide: adapt Norway example", time: "2hr"}
+    - {file: "docs/aurora-prototyping-guide.md", lines: 586, desc: "From scratch guide: build from fundamentals", time: "2hr"}
+    - {file: "docs/data-integration.md", lines: 166, desc: "CDS ERA5 data integration", time: "30min"}
+    - {file: "docs/application-patterns.md", lines: 343, desc: "Domain-specific workflow templates", time: "1hr"}
+    - {file: "docs/emergency-fixes.md", lines: 271, desc: "Troubleshooting common issues", time: "as-needed"}
+    - {file: "docs/performance-guide.md", lines: 47, desc: "Hardware and optimization strategies", time: "15min"}
+
+setup:
+  enterprise: 
+    requirements: ["Azure subscription", "Azure AI Foundry access (optional for hosted inference)"]
+    setup_time: "10min"
+  individual: 
+    requirements: ["Python 3.10+", "16GB RAM", "25GB storage"]
+    setup_time: "20min"
+
+technical:
+  languages: ["python", "typescript"]
+  dependencies: ["torch>=2.0", "numpy>=2.3", "xarray>=2025.10", "netcdf4>=1.7", "microsoft-aurora>=0.2"]
+  hardware:
+    minimum: {ram: "16GB", storage: "25GB", compute: "CPU"}
+    recommended: {ram: "32GB", storage: "100GB", compute: "NVIDIA A10 24GB"}
+
+quality_metrics:
+  validation_status: "tested"
+  last_validation_date: "2025-11-03"
+  success_metrics: {first_success_rate: 95, completion_rate: 80}
+  known_limitations: ["GPU recommended for full-resolution global forecasts", "CDS API credentials required for downloading fresh ERA5 data"]
+
+integration:
+  compatible_kits: ["planetary-computer", "azure-ai-foundry"]
+  external_apis:
+    - {name: "Azure AI Foundry", type: "optional", purpose: "Hosted inference deployment"}
+    - {name: "Copernicus CDS", type: "optional", purpose: "Download ERA5 data in NetCDF format"}
+
+context_management:
+  priority_files: ["INNOVATION_KIT.md", "docs/quick-start.md", "docs/prototyping-guide.md", "docs/application-patterns.md"]
+  context_tokens: {total_kit: 22000, core_files: 18000, recommended_load: 8000}
+

@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Backend: uv sync",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "set -euo pipefail; mkdir -p \"$UV_CACHE_DIR\"; uv sync --python=/usr/local/bin/python3 --extra dev --link-mode=copy"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend",
+        "env": {
+          "UV_CACHE_DIR": "/tmp/uv-cache/${workspaceFolderBasename}",
+          "UV_PYTHON": "/usr/local/bin/python3",
+          "UV_LINK_MODE": "copy"
+        }
+      },
+      "presentation": {
+        "reveal": "never",
+        "echo": false,
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: clean",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "set -euo pipefail; rm -rf .venv .cache/uv build dist .pytest_cache htmlcov .mypy_cache; find . -type d -name '__pycache__' -exec rm -rf {} +"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "presentation": {
+        "reveal": "never",
+        "echo": false,
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: npm install",
+      "type": "shell",
+      "command": "npm install",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "never",
+        "echo": false,
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: clean",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "set -euo pipefail; rm -rf node_modules dist .turbo .cache coverage; find . -type d -name '.vite' -exec rm -rf {} +"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "never",
+        "echo": false,
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Wait for backend",
+      "type": "shell",
+      "command": "cd ${workspaceFolder}/frontend && npm install && until curl -f http://localhost:8009/docs; do sleep 1; done",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "never",
+        "echo": false,
+        "focus": false,
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

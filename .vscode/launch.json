@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Backend + Frontend (Debug)",
+      "configurations": [
+        "Python: FastAPI (uvicorn)",
+        "Node: Vite Dev Server (Debug)"
+      ],
+      "stopAll": true
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Python: FastAPI (uvicorn)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8010",
+        "--log-level",
+        "debug",
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/backend",
+      "python": "${workspaceFolder}/backend/.venv/bin/python",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/backend"
+      },
+      "preLaunchTask": "Backend: uv sync"
+    },
+    {
+      "name": "Node: Vite Dev Server (Debug)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--logLevel",
+        "info",
+      ],
+      "cwd": "${workspaceFolder}/frontend",
+      "console": "integratedTerminal",
+      "env": {
+        "VITE_API_URL": "http://localhost:8010"
+      },
+      "preLaunchTask": "Wait for backend",
+      "autoAttachChildProcesses": true,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Local:\\s+(https?://.*)",
+        "uriFormat": "%s"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}
