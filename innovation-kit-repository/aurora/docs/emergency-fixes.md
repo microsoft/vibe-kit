@@ -262,8 +262,8 @@ python3 -c "import aurora, torch; print('✓ Aurora ready')"
 ```bash
 cd frontend
 rm -rf node_modules .vite
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 ---
