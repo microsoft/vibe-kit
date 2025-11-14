@@ -18,25 +18,31 @@ ReferenceLinks:
 
 **Installation:** Run `vibekit install aurora` from your workspace root, then reload VS Code window (Ctrl+Shift+P → "Developer: Reload Window") to activate the Aurora Forecast chat mode.
 
-**Learn by doing:** This kit centers on the Norway coastal forecast prototype—a complete, working example that teaches Aurora's capabilities through hands-on experience.
+**Learn by doing:** This kit centers on the Norway mainland forecast prototype (64×112 grid)—a complete, working example that teaches Aurora's capabilities through hands-on experience.
 
 ### Prerequisites
 Before starting, ensure you have:
 - **Python 3.10+** with `torch`, `numpy`, `xarray`, `aurora` (or use provided `requirements.txt`)
-- **Node.js 18+** and `pnpm` for frontend development (optional)
+- **Node.js 18+** and `npm` for frontend development (optional)
 - **4GB+ free disk space** for model checkpoints and sample data
 - **GPU recommended** (but CPU works for small grids)
 
+**Map center (Norway example)**: [64.875°N, 17.875°E]
+
 ### Getting Started
-- **[docs/quick-start.md](.vibe-kit/innovation-kits/aurora/docs/quick-start.md)** – Get the Norway example running in 30 minutes (frontend → Copilot → inference → results)
-- **[docs/norway-technical-guide.md](.vibe-kit/innovation-kits/aurora/docs/norway-technical-guide.md)** – Understand how Aurora inference works (2 timesteps, 48×48 grid, 24-hour stability)
-- **[assets/norway-example/](.vibe-kit/innovation-kits/aurora/assets/norway-example/)** – Complete reference implementation (scripts, frontend, sample data)
+- **[docs/quick-start.md](.vibe-kit/innovation-kits/aurora/docs/quick-start.md)** – Get the 64×112 Norway example running in 30 minutes (frontend → Copilot → inference → results)
+- **[docs/norway-technical-guide.md](.vibe-kit/innovation-kits/aurora/docs/norway-technical-guide.md)** – Understand how Aurora inference works (2 timesteps, 64×112 grid, 24-hour stability)
+- **[assets/norway-example/](.vibe-kit/innovation-kits/aurora/assets/norway-example/)** – Complete reference implementation (scripts, frontend, mainland Norway ERA5 bundle)
 
 ### Build Your Own
-- **[docs/prototyping-guide.md](.vibe-kit/innovation-kits/aurora/docs/prototyping-guide.md)** – **Customization Guide**: Adapt the Norway example for your region, variables, and forecast horizon (modify working code)
+- **[docs/expand-norway-example.md](.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md)** – **Customization Guide**: Adapt the Norway example for your region, variables, and forecast horizon (modify working code)
 - **[docs/aurora-prototyping-guide.md](.vibe-kit/innovation-kits/aurora/docs/aurora-prototyping-guide.md)** – **From Scratch Guide**: Build your own Aurora application from fundamentals (learn core concepts without starting from an example)
 - **[docs/data-integration.md](.vibe-kit/innovation-kits/aurora/docs/data-integration.md)** – Connect your own CDS ERA5 data sources and convert to Aurora format
 - **[docs/application-patterns.md](.vibe-kit/innovation-kits/aurora/docs/application-patterns.md)** – Scenario templates for coastal forecasting, energy, agriculture, and maritime
+
+**Norway baseline facts:** 64×112 grid (57.0–72.75° N, 4.0–31.75° E). ERA5 bundle totals ~8.5 MB (`norway_surface.nc` 1.5 MB, `norway_atmospheric.nc` 6.9 MB, `norway_static.nc` 81 KB). Frontend assets for the example include ~54 MB observations and ~7.6 MB predictions (these bundles are gitignored). Forecast output `norway_june8_forecast.nc` + regenerated TypeScript modules stay local.
+
+Checkpoint download: the first run downloads the Aurora checkpoint (~5.03 GB) to `~/.cache/aurora` -- this typically takes ~5 minutes on a fast connection; subsequent runs use the cached checkpoint.
 
 ### Utilities & Tools
 - **[assets/scripts/](.vibe-kit/innovation-kits/aurora/assets/scripts/)** – Standalone utilities for data validation, CDS downloads, and NetCDF inspection
@@ -45,7 +51,7 @@ Before starting, ensure you have:
   - `download_era5_subset.py` – Automate CDS API downloads for custom regions
 
 ### Troubleshooting & Optimization
-- **[docs/emergency-fixes.md](.vibe-kit/innovation-kits/aurora/docs/emergency-fixes.md)** – Solutions to common issues (model divergence, grid errors, timezone bugs)
+- **[docs/troubleshooting.md](.vibe-kit/innovation-kits/aurora/docs/troubleshooting.md)** – Solutions to common issues (model divergence, grid errors, timezone bugs)
 - **[docs/performance-guide.md](.vibe-kit/innovation-kits/aurora/docs/performance-guide.md)** – Hardware sizing, GPU optimization, and production deployment patterns
 
 
@@ -76,7 +82,7 @@ Each doc clearly labels this as opt-in so readers understand the prototype conti
 ## Quick Wins Checklist
 
 After completing the quick start, you should be able to:
-- ✓ Run Aurora inference on a 48×48 grid in under 10 minutes (CPU) or 2 minutes (GPU)
+- ✓ Run Aurora inference on a 64×112 grid in ~45 minutes (CPU) or ~6 minutes (GPU)
 - ✓ Generate 24-hour forecasts with 6-hour timesteps (4 predictions)
 - ✓ Visualize wind speed, temperature, and pressure on an interactive map
 - ✓ Download your own ERA5 data for any region using the provided utilities
@@ -84,7 +90,7 @@ After completing the quick start, you should be able to:
 
 ## Philosophy
 
-**Focus**: Hands-on learning through the Norway coastal forecast prototype, then adaptation to your specific scenario  
+**Focus**: Hands-on learning through the Norway mainland forecast prototype, then adaptation to your specific scenario  
 **Scope**: Regional weather forecasting (24-hour horizons), with patterns for energy, agriculture, and maritime  
 **Timeline**: Hour 1 – Norway example running | Hours 2-4 – understand internals | Hours 4-8 – build your own prototype
 

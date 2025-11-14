@@ -4,13 +4,17 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List, Optional
 import os
-import typer
+from rich.console import Console
+
+
+console = Console()
 
 
 def emit_repo_source(repo_root: Optional[List[Path]], source_kind: str):
     if source_kind == "none":
         return
-    typer.echo(f"Repository source: {source_kind} -> {repo_root}")
+    repo_root_str = ", ".join(str(r) for r in repo_root) if repo_root else ""
+    console.print(f"[dim]Repository source: {source_kind} -> {repo_root_str}[/]")
 
 
 def baseline_source(override: Optional[str]) -> str:

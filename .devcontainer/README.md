@@ -19,9 +19,9 @@ Innovation Kits specific to different Microsoft Research projects can be added t
     1) **CTRL+SHIFT+P** (**⌘+SHIFT+P**) → "**Dev Containers: Reopen in Container**"
     2) Wait for the container to build and start (which will take a few minutes the first time). Once the Docker image is downloaded, tools are installed, and the container is launched, the setup will automatically run the script `.devcontainer/postCreateCommand.sh` which will:
         1. Verify proper tool installation - Confirms all development tools are available
-        2. Show version information - Shows versions of key tools (Python, Node.js, uv, pnpm, etc.)
+    2. Show version information - Shows versions of key tools (Python, Node.js, uv, npm, etc.)
         3. Install `backend` Python packages - Installs Python dependencies via `uv`
-        4. Install `frontend` Node.js modules - Installs Node.js dependencies via `pnpm`
+        4. Install `frontend` Node.js modules - Installs Node.js dependencies via `npm`
         5. Install MCP servers and ensure that they are initialized - Prepares GitHub Copilot MCP servers for faster initial Copilot chat startup
     3) **Look for the clear "SETUP COMPLETE!" banner in the terminal to know when everything is ready.**
 3) Run and view the boilerplate website
@@ -67,11 +67,11 @@ Once you have the Vibe Kit open in its dev container and have verified that the 
 ### Dev Container
 
 Dev Container contents are defined in the `.devcontainer/` directory:
-- Base Docker image: `mcr.microsoft.com/devcontainers/python:dev-3.12-bullseye` with Node 20.x and global `pnpm`.
+- Base Docker image: `mcr.microsoft.com/devcontainers/python:dev-3.12-bullseye` with Node 20.x and global `npm`.
 - VS Code Extensions & settings: Python, Pylance, Jupyter, ESLint, Prettier, Ruff (Python linting and formatter), GitHub Copilot Chat, Markdown.
 - Ports forwarded: 3010 (`frontend/` web site), 8010 (`backend/` Python API). These are required on the host (no remap). Other ports notify on access.
-- Volumes: `uv-cache` at `/home/vscode/.cache/uv`, `pnpm-store` at `/home/vscode/.pnpm-store`.
-- Post-create: ensures Astral `uv` is installed, prints tool versions, runs `pnpm install` in `frontend/`, and `uv sync` in `backend/`.
+- Volumes: `uv-cache` at `/home/vscode/.cache/uv`, `npm-cache` at `/home/vscode/.npm-cache`.
+- Post-create: ensures Astral `uv` is installed, prints tool versions, runs `npm install` in `frontend/`, and `uv sync` in `backend/`.
 - Proxy support via build args `HTTP_PROXY/HTTPS_PROXY/NO_PROXY` if set locally.
 
 
@@ -79,14 +79,14 @@ Dev Container contents are defined in the `.devcontainer/` directory:
 
 Tasks (`.vscode/tasks.json`):
 - Backend: uv sync — sync Python dependencies in `backend/`.
-- Frontend: pnpm install — install JS dependencies in `frontend/`.
+- Frontend: npm install — install JS dependencies in `frontend/`.
 
 Launch (`.vscode/launch.json`):
 - Python: **FastAPI (uvicorn)**
 	- Runs `uvicorn main:app --reload` in `backend/` with `PYTHONPATH` set.
 	- Pre-launch task: Backend: uv sync.
 - Node: **Vite Dev Server (Debug)**
-    - Runs `pnpm run dev -- --logLevel info` in `frontend/` on port 3010.
+    - Runs `npm run dev -- --logLevel info` in `frontend/` on port 3010.
     - Env: `VITE_API_URL=http://localhost:8010`.
     - Pre-launch task: Wait for backend.
     - Automatically opens your browser when the server starts.
@@ -110,8 +110,8 @@ Check: http://localhost:8010/helloworld
 
 ```bash
 cd frontend
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 Open: http://localhost:3010

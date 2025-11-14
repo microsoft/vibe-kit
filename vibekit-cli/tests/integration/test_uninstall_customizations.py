@@ -22,8 +22,10 @@ def test_uninstall_removes_customizations(run_cli, tmp_path: Path):
     assert instructions_file.exists()
 
     result = run_cli(tmp_path, "uninstall", "u-kit")
+
+    print(result.stdout)
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "removed customization assets" in result.stdout.lower()
+    assert "removed customization 3 assets" in result.stdout.lower()
     assert not prompt_file.exists()
     assert not chat_file.exists()
     assert not instructions_file.exists()

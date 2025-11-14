@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 
 
 def test_list_uses_env_path_direct(run_cli, tmp_path: Path):
@@ -8,12 +7,17 @@ def test_list_uses_env_path_direct(run_cli, tmp_path: Path):
     repo = repo_root / "rk"
     repo.mkdir(parents=True)
     (repo/"MANIFEST.yml").write_text("kit_info:\n  name: rk\n  version: 0.2.0\n")
-    (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
+    (tmp_path/".env").write_text(f"VIBEKIT_BASE_PATH={repo_root}\n")
     run_cli(tmp_path, "init", check=True)
     res = run_cli(tmp_path, "list")
+
+    # strip newlines for easier matching
+    output = res.stdout.replace("\n", "")
     assert res.returncode == 0
-    assert "Repository source: env" in res.stdout
-    assert "rk 0.2.0" in res.stdout
+    print(output)
+    assert "Repository source: env" in output
+    assert "Available Innovation Kits:" in output
+    assert "│ rk     │ 0.2.0   │ " in output
 
 
 def test_install_uses_env_repo_only(run_cli, tmp_path: Path):
@@ -21,7 +25,7 @@ def test_install_uses_env_repo_only(run_cli, tmp_path: Path):
     repo = repo_root / "ik"
     repo.mkdir(parents=True)
     (repo/"MANIFEST.yml").write_text("kit_info:\n  name: ik\n  version: 1.0.1\n")
-    (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
+    (tmp_path/".env").write_text(f"VIBEKIT_BASE_PATH={repo_root}\n")
     run_cli(tmp_path, "init", check=True)
     res = run_cli(tmp_path, "install", "ik")
     assert res.returncode == 0, res.stderr
@@ -45,7 +49,8 @@ def test_update_uses_env_repo(run_cli, tmp_path: Path):
     repo = repo_root / "upkit"
     repo.mkdir(parents=True)
     (repo/"MANIFEST.yml").write_text("kit_info:\n  name: upkit\n  version: 1.0.0\n")
-    (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
+    (tmp_path/".env").write_text(f"VIBEKIT_BASE_PATH={repo_root}\n")
+
     run_cli(tmp_path, "init", check=True)
     run_cli(tmp_path, "install", "upkit")
     # bump version in base

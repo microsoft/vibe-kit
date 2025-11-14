@@ -1,8 +1,8 @@
 # Quick Start: Run Your First Aurora Forecast
 
-**Complete this tutorial in 30 minutes to generate a 24-hour weather forecast using Aurora AI.**
+**Launch the Norway reference app in 5 minutes, then generate 24-hour forecasts.**
 
-This guide walks you through the Norway coastal forecast example from start to finish. You'll visualize historical data, run ML inference, and compare AI predictions against observations.
+This guide walks you through the 64×112 Norway demo. First you'll explore June 1–7 observations, then generate June 8 predictions using Aurora AI.
 
 ---
 
@@ -10,62 +10,53 @@ This guide walks you through the Norway coastal forecast example from start to f
 
 ✅ **Vibe Kit installed** with Aurora Innovation Kit  
 ✅ **Dev container running** (recommended) or local Python 3.12+ / Node.js 18+  
-✅ **~5GB disk space** (Aurora model checkpoint + dependencies)  
-✅ **GPU optional** (5-10 min on GPU, 15-20 min on CPU)
-
-> **Preview only?** Complete Step 1 to explore June 1-7 observations. Steps 3-5 install Aurora (~5GB first run) and generate June 8 predictions when you're ready.
+✅ **~6GB disk space** (Aurora checkpoint + dependencies, needed for inference only)  
+✅ **GPU optional** (~6 min on A100, ~45 min on CPU for inference)
 
 ---
 
-## Step 1: Launch the Frontend (5 min)
+## Step 1: Launch the Reference App (5 min)
 
-Open the norway-example and start the visualization:
+Start by viewing the bundled ERA5 observations (June 1–7, 2025):
 
 ```bash
 cd .vibe-kit/innovation-kits/aurora/assets/norway-example/frontend
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 **Open browser:** http://localhost:5174
 
 ### What You'll See
 
-- **Map view** of Norway's coast (58.25°N-70°N, 5°E-16.75°E)
-- **CDS Observations toggle** (ON) - Shows June 1-7, 2025 historical data
-- **Aurora Predictions toggle** (disabled until inference) - Turns on after you complete Steps 3-5
-- **Time slider** to scrub through June 1-7
-- **Tutorial hint** at top: *"Ready for the next step? Ask GitHub Copilot to guide you through generating Aurora predictions for June 8."*
+- **Map view** covering mainland Norway (57.0°N–72.75°N, 4.0°E–31.75°E)
+- **CDS Observations** toggle enabled (June 1–7, 2025 data)
+- **Aurora Predictions** toggle disabled (you'll generate these next)
+- **Time slider** with 28 observation timesteps (every 6 hours)
 
-### Explore the Data
+### Explore the Observations
 
-1. **Scrub the time slider** → Watch temperature patterns change over 7 days
-2. **Hover over cells** → See exact temperature values (°C)
-3. **Notice the patterns** → Coastal gradients, daily cycles, weather fronts
+1. **Scrub the time slider** → Watch temperature patterns evolve over 7 days
+2. **Hover over cells** → Inspect exact values (°C, wind speed, pressure)
+3. **Notice the patterns** → Gulf Stream warmth, inland cooling, synoptic fronts
 
-**Key insight:** These are real ERA5 reanalysis observations. Aurora will predict June 8 based on the last 2 timesteps (June 7 at 12:00 & 18:00).
-
----
-
-## Step 2: Ask GitHub Copilot for Guidance (2 min)
-
-Open **GitHub Copilot Chat** in VS Code and ask:
-
-> *"Guide me through running Aurora inference for the Norway example"*
-
-**Copilot will:**
-1. Check if dependencies are installed
-2. Explain what `run_aurora_inference.py` does
-3. Show you the exact command to run
-4. Explain expected output
-
-**Why use Copilot?** The Innovation Kit customizations ensure Copilot has context about Aurora's architecture, the norway-example structure, and common troubleshooting steps.
+**Key insight:** These are real ERA5 reanalysis observations. Next you'll use Aurora to predict June 8 based on the last 2 timesteps (June 7 at 12:00 & 18:00).
 
 ---
 
-## Step 3: Install Dependencies (3 min, when ready for inference)
+## Step 2: Generate Aurora Predictions
 
-> Skip to Step 6 if you only need to explore the observations. Run this step once you're ready to generate Aurora predictions.
+Once you've explored the observations, come back to GitHub Copilot Chat and ask:
+
+> *"I'm ready to run Aurora inference for June 8"*
+
+or simply continue to Step 3 below.
+
+---
+
+## Step 3: Install Python Dependencies (3 min)
+
+Before running inference, install the required packages:
 
 ```bash
 cd .vibe-kit/innovation-kits/aurora/assets/norway-example
@@ -77,16 +68,20 @@ pip install -r scripts/requirements.txt
 - `microsoft-aurora` - Aurora inference package
 - `netCDF4` - For reading/writing forecast files
 - `numpy`, `xarray` - Array operations
-- `huggingface-hub` - Download model checkpoint
-
-**First time?** PyTorch (~2GB) + Aurora checkpoint (5GB) will download. Subsequent runs are fast.
+- `huggingface-hub` - Downloads model checkpoint (~5 GB on first run)
 
 ---
 
-## Step 4: Run Aurora Inference (10 min)
+## Step 4: Run Aurora Inference (6 min GPU · 45 min CPU)
+
+Generate the June 8 forecast:
 
 ```bash
-python3 scripts/run_aurora_inference.py
+python3 scripts/run_aurora_inference.py \
+  --surf data/norway_surface.nc \
+  --atmos data/norway_atmospheric.nc \
+  --static data/norway_static.nc \
+  --output data/norway_june8_forecast.nc
 ```
 
 ### What Happens
@@ -98,15 +93,18 @@ Loading checkpoint from microsoft/aurora...
 Checkpoint loaded: 5.03 GB
 ```
 
+**First run downloads the ~5 GB Aurora checkpoint** to `~/.cache/aurora`. Subsequent runs skip this step.
+
 **Data loading (30 sec):**
 ```
 Loading ERA5 input data...
-Input grid: 48×48 cells (2,304 points)
+Input grid: 64×112 cells (7,168 points)
 Timesteps: June 7, 2025 at 12:00 and 18:00
-Variables: 4 surface, 4 atmospheric (3 levels each)
+Surface variables: 10m wind (u/v), 2m temperature, mean sea-level pressure
+Atmospheric variables: geopotential, humidity, temperature, winds (1000/925/850/700 hPa)
 ```
 
-**Inference (5-10 min on GPU, 15-20 min on CPU):**
+**Inference (6 min GPU, 45 min CPU devcontainer):**
 ```
 Running forecast...
 Step 1/4: June 8, 00:00 ✓
@@ -117,8 +115,10 @@ Step 4/4: June 8, 18:00 ✓
 
 **Saving output (10 sec):**
 ```
-Forecast saved: data/aurora_forecast_june8.nc (187 KB)
-Variables: 2m_temperature, 10m_u_wind, 10m_v_wind
+DEBUG: First prediction shape for '2t': torch.Size([1, 1, 64, 112])
+DEBUG: Extracted array shape: (lat=64, lon=112)
+✓ Saved 6.4 MB → data/norway_june8_forecast.nc
+Variables: 2m_temperature, 10m_u_wind, 10m_v_wind, mean_sea_level_pressure
 ```
 
 ### Troubleshooting
@@ -127,7 +127,7 @@ Variables: 2m_temperature, 10m_u_wind, 10m_v_wind
 → Reduce batch size in `run_aurora_inference.py` (line 40: `batch_size=1`)
 
 **"Grid dimensions not divisible by 16"**
-→ Should not happen with 48×48 grid. See [emergency-fixes.md](emergency-fixes.md) if you modified region.
+→ The bundled data already aligns to 64×112. If you edited files, re-run the ERA5 download script to restore the grid.
 
 **"Module 'microsoft_aurora' not found"**
 → Run `pip install -r scripts/requirements.txt` again
@@ -136,48 +136,42 @@ Variables: 2m_temperature, 10m_u_wind, 10m_v_wind
 
 ---
 
-## Step 5: Convert to Visualization Format (1 min)
+## Step 5: Convert NetCDF to TypeScript (1 min)
 
-Aurora outputs NetCDF. The frontend needs TypeScript. Run this command after inference to generate the dataset the UI consumes.
-
-Convert:
+Aurora writes NetCDF files; the React app consumes TypeScript modules. Regenerate the predictions module so the visualization can load the new forecast:
 
 ```bash
 python3 scripts/build_forecast_module.py \
-  data/aurora_forecast_june8.nc \
+  data/norway_june8_forecast.nc \
   --output frontend/src/data/auroraForecastPredictions.ts \
+  --region-name 'Aurora Forecast: Norway June 8' \
   --max-steps 4
 ```
 
-**What this does:**
-1. Reads `aurora_forecast_june8.nc`
-2. Extracts temperature data for June 8 (4 timesteps)
-3. Converts to TypeScript with proper types
-4. Saves to `frontend/src/data/auroraForecastPredictions.ts`
-
-**Output:**
-```
-Processing forecast data...
-Timesteps: 4 (June 8: 00:00, 06:00, 12:00, 18:00)
-Grid: 48×48 cells
-Output: frontend/src/data/auroraForecastPredictions.ts (183 KB)
-```
+The script prints the timestep range, grid dimensions (64×112), and min/max values. The generated `.ts` file remains untracked in git—regenerate whenever you re-run inference.
 
 ---
 
-## Step 6: View Results (5 min)
+## Step 6: View the Forecast (2 min)
 
-### Refresh the Frontend
+### Restart the Frontend
 
-Go back to http://localhost:5174 and **hard refresh** (Ctrl+Shift+R or Cmd+Shift+R)
+The Vite dev server may not pick up the large TypeScript file automatically. Stop the server (Ctrl+C) and restart it:
 
-### Toggle Between Datasets
+```bash
+cd frontend
+npm run dev
+```
+
+### Hard Refresh the Browser
+
+Visit http://localhost:5174 and do a **hard refresh** (Ctrl+Shift+R or Cmd+Shift+R) to force reload the bundle.
+
+### Toggle to Aurora Predictions
 
 1. **Turn OFF "CDS Observations"** → Heatmap clears
-2. **Turn ON "Aurora Predictions"** → June 8 forecast appears
-3. **Scrub the time slider** → See 4 timesteps (00:00, 06:00, 12:00, 18:00)
-
-If you skipped Steps 3-5, the Aurora toggle remains disabled—complete the inference steps to populate it.
+2. **Turn ON "Aurora Predictions"** → June 8 forecast appears (4 timesteps)
+3. **Scrub the time slider** → Compare June 8 predictions with June 7 observations
 
 ### Compare Observations vs Predictions
 
@@ -186,43 +180,25 @@ Toggle both ON to see:
 - **Aurora (June 8):** 4 timesteps of AI predictions
 
 **Key observations:**
-- **Temperature ranges:** Aurora predicts 0-15°C (realistic for coastal Norway in June)
+- **Temperature ranges:** Aurora predicts roughly −5 °C to 18 °C (realistic for June)
 - **Spatial patterns:** Coastal gradients preserved
 - **Temporal evolution:** Smooth transitions between 6-hour steps
 - **Conservative forecasts:** Aurora stays within plausible bounds
 
 ---
 
-## What You Just Did
+## Congratulations!
 
-✅ **Loaded 7 days of ERA5 observations** (June 1-7)  
-✅ **Ran Aurora inference** using last 2 timesteps (June 7)  
-✅ **Generated 24-hour forecast** (June 8, 4 steps)  
-✅ **Visualized results** in interactive React app  
-✅ **Compared AI predictions** against historical patterns
+You've completed the full Aurora workflow:
 
----
+✅ **Launched the reference app** with June 1–7 observations  
+✅ **Installed inference dependencies** (PyTorch, Aurora, NetCDF)  
+✅ **Ran Aurora inference** using last 2 timesteps (June 7, 12:00 & 18:00)  
+✅ **Generated 24-hour forecast** (June 8, 4 steps at 6-hour intervals)  
+✅ **Converted outputs to TypeScript** and visualized predictions  
+✅ **Compared AI forecasts** against historical patterns
 
-## Understanding the Results
-
-### Why Only 24 Hours?
-
-Aurora was trained on global data. On small regional grids (48×48), predictions remain stable for 24-48 hours before boundary effects accumulate. Extending to 7 days causes model divergence (unrealistic temperatures).
-
-### Why 2 Input Timesteps?
-
-Aurora needs:
-1. **Current state** (June 7, 18:00) - Temperature, pressure, wind
-2. **Previous state** (June 7, 12:00) - To calculate trends (acceleration, gradients)
-
-This captures atmospheric dynamics (momentum, energy transport) needed for accurate forecasting.
-
-### Why 48×48 Grid?
-
-Aurora's encoder uses `patch_size=16`. Grid dimensions must be divisible by 16. Common options:
-- **48×48** (2,304 points) - Small regional forecasts
-- **64×64** (4,096 points) - Medium regions
-- **80×80** (6,400 points) - Larger areas with better boundary conditions
+**What's next?** Adapt this for your region, extend the forecast horizon, or explore other use cases below.
 
 ---
 
@@ -230,7 +206,7 @@ Aurora's encoder uses `patch_size=16`. Grid dimensions must be divisible by 16. 
 
 ### Learn the Internals (1 hour)
 
-**Read:** [norway-technical-guide.md](norway-technical-guide.md) or `assets/norway-example/AURORA_INFERENCE_GUIDE.md`
+**Read:** [norway-technical-guide.md](norway-technical-guide.md)
 
 **Topics:**
 - How `run_aurora_inference.py` works (line-by-line)
@@ -240,7 +216,7 @@ Aurora's encoder uses `patch_size=16`. Grid dimensions must be divisible by 16. 
 
 ### Build Your Own Forecast (4-8 hours)
 
-**Read:** [prototyping-guide.md](prototyping-guide.md)
+**Read:** [expand-norway-example.md](expand-norway-example.md)
 
 **Adapt the example:**
 - Change region (modify lat/lon bounds)
@@ -264,66 +240,32 @@ Aurora's encoder uses `patch_size=16`. Grid dimensions must be divisible by 16. 
 ## Common Questions
 
 **Q: Can I run this on CPU?**  
-A: Yes, but expect 15-20 minutes vs 5-10 on GPU. Add `--device cpu` to `run_aurora_inference.py`.
+A: Yes, but expect 45 minutes vs 6 minutes on GPU. The command is the same.
 
 **Q: How accurate is Aurora?**  
 A: Aurora matches operational NWP models on global benchmarks. For regional forecasts, validate against actual June 8 observations if available.
 
 **Q: Can I use different dates?**  
-A: Yes! Fetch different CDS data and update the date range in `run_aurora_inference.py` (line 85-95). Ensure 2 consecutive timesteps for input.
+A: Yes! Fetch different CDS data and update the date range in `run_aurora_inference.py`. Ensure 2 consecutive timesteps for input.
 
 **Q: What if my region isn't Norway?**  
-A: See [prototyping-guide.md](prototyping-guide.md) "Adapting the Region" section. Key: Ensure grid dimensions divisible by 16.
+A: See [expand-norway-example.md](expand-norway-example.md) "Adapting the Region" section. Key: Ensure grid dimensions divisible by 16.
 
 **Q: Can I run Aurora without internet?**  
 A: After first download, Aurora runs offline. Model checkpoint (~5GB) is cached in `~/.cache/huggingface/`.
 
 **Q: How do I validate predictions?**  
-A: Download actual June 8 observations from CDS and compare against `aurora_forecast_june8.nc` using tools like `xarray` or visualization scripts.
-
----
-
-## Troubleshooting Guide
-
-### Frontend Issues
-
-**Aurora toggle grayed out**
-→ Did you run `build_forecast_module.py`? Check `frontend/src/data/auroraForecastPredictions.ts` exists.
-
-**Wrong dates showing**
-→ Hard refresh (Ctrl+Shift+R). Check `auroraForecastPredictions.ts` has exactly 4 timesteps.
-
-**Heatmap not updating**
-→ Open browser console (F12). Look for errors. Try `pnpm dev` again.
-
-### Inference Issues
-
-**"RuntimeError: CUDA out of memory"**
-→ Close other programs. Try `--device cpu` or reduce `batch_size=1`.
-
-**"ValueError: Grid dimensions must be divisible by 16"**
-→ Check `run_aurora_inference.py` line 25-30. Grid should be 48×48.
-
-**Predictions look wrong (temps > 50°C or < -50°C)**
-→ Model diverged. Reduce `num_steps` to 2-3 and test again.
-
-### Data Issues
-
-**"FileNotFoundError: data/4d2238a45558de23ef37ca2e27a0315.nc"**
-→ You're not in the `norway-example/` directory. Run `cd .vibe-kit/innovation-kits/aurora/assets/norway-example`.
-
-**"Invalid NetCDF file"**
-→ Files corrupted. Re-download the sample data or fetch fresh data from CDS.
+A: Download actual June 8 observations from CDS and compare against `norway_june8_forecast.nc` using tools like `xarray` or visualization scripts.
 
 ---
 
 ## Performance Benchmarks
 
 **Tested on:**
-- **GPU (NVIDIA A100 40GB):** 5 min (4-step forecast)
-- **GPU (NVIDIA T4 16GB):** 8 min
-- **CPU (16-core Intel Xeon):** 18 min
-- **CPU (8-core M2 Mac):** 22 min
+- **GPU (NVIDIA A100 40GB):** 6 min (4-step forecast)
+- **GPU (NVIDIA T4 16GB):** 10 min
+- **CPU (16-core Intel Xeon):** 45 min
+- **CPU (8-core M2 Mac):** 55 min
 
 **Memory usage:**
 - **GPU:** 8-12 GB VRAM
@@ -332,15 +274,5 @@ A: Download actual June 8 observations from CDS and compare against `aurora_fore
 
 ---
 
-## What's Next?
-
-**Congratulations!** You've run your first Aurora forecast. Choose your path:
-
-1. **Deep dive:** [norway-technical-guide.md](norway-technical-guide.md) - Understand every line of code
-2. **Build your own:** [prototyping-guide.md](prototyping-guide.md) - Adapt for your scenario
-3. **Explore patterns:** [application-patterns.md](application-patterns.md) - See other use cases
-
----
-
-**Part of:** [Aurora Innovation Kit](.vibe-kit/innovation-kits/aurora/INNOVATION_KIT.md)  
-**Reference implementation:** [assets/norway-example/](.vibe-kit/innovation-kits/aurora/assets/norway-example/)
+**Part of:** [Aurora Innovation Kit](../INNOVATION_KIT.md)  
+**Reference implementation:** [assets/norway-example/](../assets/norway-example/)

@@ -10,7 +10,7 @@
             "NO_PROXY": "${localEnv:NO_PROXY}"
         }
     },
-    // Set up a location for temp files that Windows won't try to index during uv/pnpm package installation
+    // Set up a location for temp files that Windows won't try to index during uv/npm package installation
     "workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind",
     "workspaceFolder": "/workspaces/vibe-kit",
     "runArgs": [
@@ -52,17 +52,16 @@
                     "typescriptreact",
                     "json"
                 ],
-                "npm.packageManager": "pnpm"
+                "npm.packageManager": "npm"
             }
         }
     },
     "remoteEnv": {
         "PATH": "${containerEnv:PATH}:/home/vscode/.local/bin",
-        // Keep uv and pnpm caches inside the container filesystem to avoid bind-mount rename issues
+        // Keep uv and npm caches inside the container filesystem to avoid bind-mount rename issues
         "UV_CACHE_DIR": "/tmp/uv-cache",
         "UV_PYTHON": "/usr/local/bin/python3",
         "UV_LINK_MODE": "copy",
-        "PNPM_STORE_PATH": "/tmp/pnpm-store",
         "TMPDIR": "/tmp"
     },
     "forwardPorts": [

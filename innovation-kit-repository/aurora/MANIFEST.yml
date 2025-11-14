@@ -3,10 +3,10 @@
 kit_info:
   name: "aurora"
   display_name: "Aurora Innovation Kit"
-  version: "0.1.3"
+  version: "0.1.4"
   description: "Earth system forecasting foundation model with 0.1°–0.4° global resolution."
   created_date: "2025-09-26"
-  last_updated: "2025-11-03"
+  last_updated: "2025-11-14"
 
 research_foundation:
   paper_title: "A foundation model for the Earth system"
@@ -24,21 +24,40 @@ prototyping:
 
 files:
   core_files:
-    - {file: "INNOVATION_KIT.md", lines: 101, desc: "Innovation Kit overview", time: "5min"}
-    - {file: "docs/quick-start.md", lines: 338, desc: "30-min Norway example tutorial", time: "30min"}
-    - {file: "docs/norway-technical-guide.md", lines: 673, desc: "Deep dive into Aurora inference mechanics", time: "1hr"}
-    - {file: "docs/prototyping-guide.md", lines: 1103, desc: "Customization guide: adapt Norway example", time: "2hr"}
-    - {file: "docs/aurora-prototyping-guide.md", lines: 586, desc: "From scratch guide: build from fundamentals", time: "2hr"}
-    - {file: "docs/data-integration.md", lines: 166, desc: "CDS ERA5 data integration", time: "30min"}
-    - {file: "docs/application-patterns.md", lines: 343, desc: "Domain-specific workflow templates", time: "1hr"}
-    - {file: "docs/emergency-fixes.md", lines: 271, desc: "Troubleshooting common issues", time: "as-needed"}
-    - {file: "docs/performance-guide.md", lines: 47, desc: "Hardware and optimization strategies", time: "15min"}
+    - {file: "INNOVATION_KIT.md", lines: 109, desc: "Innovation Kit overview", time: "5min"}
+    - {file: "docs/quick-start.md", lines: 278, desc: "30-min Norway example tutorial", time: "30min"}
+    - {file: "docs/norway-technical-guide.md", lines: 493, desc: "Deep dive into Aurora inference mechanics", time: "1hr"}
+    - {file: "docs/expand-norway-example.md", lines: 1095, desc: "Customization guide: adapt Norway example", time: "2hr"}
+    - {file: "docs/aurora-prototyping-guide.md", lines: 533, desc: "From scratch guide: build from fundamentals", time: "2hr"}
+    - {file: "docs/data-integration.md", lines: 187, desc: "CDS ERA5 data integration", time: "30min"}
+    - {file: "docs/application-patterns.md", lines: 301, desc: "Domain-specific workflow templates", time: "1hr"}
+    - {file: "docs/troubleshooting.md", lines: 278, desc: "Troubleshooting common issues", time: "as-needed"}
+    - {file: "docs/performance-guide.md", lines: 55, desc: "Hardware and optimization strategies", time: "15min"}
+    - {file: "customizations/Aurora Forecast.chatmode.md", lines: 370, desc: "AI assistant chat mode configuration", time: "5min"}
+    - {file: "customizations/aurora-innovation-kit.instructions.md", lines: 188, desc: "GitHub Copilot routing instructions", time: "5min"}
+
+data_samples:
+  grid_dimensions: "64x112"
+  geographic_bounds:
+    north: 72.75
+    south: 57.0
+    east: 31.75
+    west: 4.0
+    map_center: [64.875, 17.875]
+  pressure_levels_hpa: [1000, 925, 850, 700]
+  inputs:
+    - {file: "assets/norway-example/data/norway_surface.nc", size_mb: 1.5, description: "Surface ERA5 variables (u10, v10, t2m, msl)", timesteps: 56}
+    - {file: "assets/norway-example/data/norway_atmospheric.nc", size_mb: 6.9, description: "Pressure-level ERA5 variables (z, q, t, u, v)", timesteps: 56}
+    - {file: "assets/norway-example/data/norway_static.nc", size_mb: 0.081, description: "Static fields (land-sea mask, orography, soil type)", timesteps: 1}
+  outputs:
+  - {file: "assets/norway-example/data/norway_june8_forecast.nc", size_mb: 31.0, description: "Aurora 24-hour forecast (4 steps, 6-hour interval)", timesteps: 4}
+  - {file: "assets/norway-example/frontend/src/data/auroraForecast.ts", size_mb: 54.0, description: "Frontend bundle of ERA5 observations (64x112, 56 steps)", timesteps: 56}
 
 setup:
-  enterprise: 
+  enterprise:
     requirements: ["Azure subscription", "Azure AI Foundry access (optional for hosted inference)"]
     setup_time: "10min"
-  individual: 
+  individual:
     requirements: ["Python 3.10+", "16GB RAM", "25GB storage"]
     setup_time: "20min"
 
@@ -62,6 +81,13 @@ integration:
     - {name: "Copernicus CDS", type: "optional", purpose: "Download ERA5 data in NetCDF format"}
 
 context_management:
-  priority_files: ["INNOVATION_KIT.md", "docs/quick-start.md", "docs/prototyping-guide.md", "docs/application-patterns.md"]
+  priority_files: ["INNOVATION_KIT.md", "docs/quick-start.md", "docs/expand-norway-example.md", "docs/application-patterns.md"]
   context_tokens: {total_kit: 22000, core_files: 18000, recommended_load: 8000}
 
+post_install:
+  instructions_markdown: |
+    1. **Reload the VS Code window** with CTRL+SHIFT+P -> Developer: Reload Window. This will ensure that the GitHub Copilot customizations are loaded.
+    2. **Switch chat modes** – In GitHub Copilot Chat, set the mode (CTRL+.) to one of the custom Aurora chat modes (start with Aurora Forecast).
+    3. **Let Copilot guide the quick start** – Ask the Aurora chat mode to walk you through the Norway example; it will surface the right snippets, tasks, and docs when you need them.
+    4. **Open the quick-start docs** – Keep `.vibe-kit/innovation-kits/aurora/docs/quick-start.md` handy while Copilot leads you through running the first forecast.
+    5. **Decide your path** – Once the example runs, have Copilot suggest whether to follow the customization track (`docs/prototyping-guide.md`) or the from-scratch track (`docs/aurora-prototyping-guide.md`) based on your goal.

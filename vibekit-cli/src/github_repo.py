@@ -258,6 +258,7 @@ def _parse_manifest_content(content: str) -> Dict[str, str]:
     except Exception:  # pragma: no cover
         return {}
     kit_info = data.get("kit_info", {}) or {}
+    post_install = data.get("post_install", {}) or {}
     result = {
         "id": kit_info.get("name"),
         "name": kit_info.get("name"),
@@ -266,6 +267,7 @@ def _parse_manifest_content(content: str) -> Dict[str, str]:
         "description": kit_info.get("description"),
         "created_date": kit_info.get("created_date"),
         "last_updated": kit_info.get("last_updated"),
+        "post_install_instructions": post_install.get("instructions_markdown"),
     }
     return {k: v for k, v in result.items() if v is not None}
 

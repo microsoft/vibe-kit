@@ -24,5 +24,8 @@ def test_update_dry_run_no_update(run_cli, tmp_path: Path):
     run_cli(tmp_path, "init", check=True)
     run_cli(tmp_path, "install", "d-kit")
     result = run_cli(tmp_path, "update", "d-kit", "--dry-run")
+
+    print(result.stdout)
     assert result.returncode == 0
-    assert "dry-run: no update needed" in result.stdout.lower()
+    assert "dry-run: up to date" in result.stdout.lower()
+    assert "no update needed for d-kit" in result.stdout.lower()

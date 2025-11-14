@@ -10,7 +10,7 @@ from github_repo import (
     list_github_repository,
     parse_github_url,
 )
-
+# vibe-kit-base/vibekit-cli/src/repo.py
 VIBEKIT_CLI_PATH = Path(__file__).parent.parent.resolve()
 
 BASE_ENV_VAR = (
@@ -84,21 +84,24 @@ def _load_dotenv_if_present(cwd: Path) -> None:
     if _DOTENV_LOADED:
         return
     _DOTENV_LOADED = True
-    env_file = VIBEKIT_CLI_PATH / ".env"
-    if not env_file.exists():
-        return
-    try:
-        for raw in env_file.read_text(encoding="utf-8").splitlines():
-            line = raw.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            k, v = line.split("=", 1)
-            k = k.strip()
-            if not k or k in os.environ:
-                continue
-            os.environ[k] = v.strip()
-    except Exception:  # pragma: no cover
-        pass
+
+    env_file_candidates = [cwd / ".env", VIBEKIT_CLI_PATH / ".env", Path.home() / ".vibekit" / ".env"]
+    for env_file in env_file_candidates:
+        if not env_file.exists():
+            continue
+        try:
+            for raw in env_file.read_text(encoding="utf-8").splitlines():
+                line = raw.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k = k.strip()
+                if not k or k in os.environ:
+                    continue
+                os.environ[k] = v.strip()
+            break  # stop after first found
+        except Exception:  # pragma: no cover
+            pass
 
 
 def resolve_repo_root(cwd: Path) -> Tuple[Optional[List[Path]], str]:
@@ -121,6 +124,7 @@ def resolve_repo_root(cwd: Path) -> Tuple[Optional[List[Path]], str]:
 
         if repo_paths_that_are_directories:
             return repo_paths_that_are_directories, "env"
+
     # Auto-discovery: walk upward looking for innovation-kit-repository
     marker = "innovation-kit-repository"
     current = cwd.resolve()

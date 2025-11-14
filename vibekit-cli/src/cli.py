@@ -24,12 +24,18 @@ def init(
         None,
         help="Optional project folder name; if omitted, scaffold into current working directory.",
     ),
+    verbose: bool = typer.Option(
+        False,
+        "-v",
+        "--verbose",
+        help="Emit detailed debug/status messages during initialization",
+    ),
 ):
     """Scaffold a new project.
 
     If no project_dir is provided, files are placed in the current directory.
     """
-    run_init(project_dir=project_dir)
+    run_init(project_dir=project_dir, verbose=verbose)
 
 
 @app.command("list")

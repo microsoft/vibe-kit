@@ -6,7 +6,7 @@ def test_uninstall_not_installed(run_cli, tmp_path: Path):
     (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
     run_cli(tmp_path, "init", check=True)
     result = run_cli(tmp_path, "uninstall", "ghost")
-    assert result.returncode == 0
+    assert result.returncode == 1
     assert "not installed" in result.stdout.lower()
 
 
@@ -43,4 +43,6 @@ def test_uninstall_drift(run_cli, tmp_path: Path):
     shutil.rmtree(kit_dir)
     result = run_cli(tmp_path, "uninstall", "demo-drift")
     assert result.returncode == 0
+
+    assert "directory missing" in result.stdout.lower()
     assert "cleaning metadata" in result.stdout.lower()

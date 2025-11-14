@@ -1,62 +1,89 @@
 from __future__ import annotations
-from pathlib import Path
+
 import json
 import os
+from pathlib import Path
 from typing import Dict, List
-import typer
-from state import load_installed_kits, resolve_state_root
-from repo import resolve_repo_root, is_git_url, list_remote_repo_kits, load_repo_env
+
+from rich.console import Console
+from rich.table import Table
+
 from manifests import extract_manifest_metadata, prefer_manifest_file
+from repo import is_git_url, list_remote_repo_kits, load_repo_env, resolve_repo_root
+from state import load_installed_kits, resolve_state_root
 from commands.common import emit_repo_source
 
+console = Console()
 
-def run_list(installed_mode: bool, json_out: bool):
+
+def run_list(installed_mode: bool, json_out: bool) -> None:
     root = resolve_state_root(Path.cwd())
     load_repo_env(root)
+
     # 1) Installed kits stored in local state
     if installed_mode:
-        installed = load_installed_kits(root)
-        if json_out:
-            typer.echo(json.dumps(installed, ensure_ascii=False, indent=2))
-            return
-        if not installed:
-            typer.echo("No kits installed")
-            return
-        for k in sorted(installed, key=lambda x: x.get("id", "")):
-            typer.echo(f"{k.get('id', '')} {k.get('version', '')}")
+        _emit_installed_kits(root, json_out)
         return
 
     # 2) Repository specified by VIBEKIT_BASE_PATH (remote GitHub or local directory)
     configured_repo = (os.getenv("VIBEKIT_BASE_PATH") or "").strip()
-    if configured_repo:
-        if is_git_url(configured_repo):
-            try:
-                entries = list_remote_repo_kits(configured_repo)
-            except (ValueError, NotImplementedError, RuntimeError) as exc:
-                typer.echo("[]" if json_out else str(exc))
-                return
-            typer.echo(f"Repository source: env-remote -> {configured_repo}")
-            _emit_entries(entries, json_out)
+    if configured_repo and is_git_url(configured_repo):
+        try:
+            entries = list_remote_repo_kits(configured_repo)
+        except (ValueError, NotImplementedError, RuntimeError) as exc:
+            if json_out:
+                print("[]")
+            else:
+                console.print(f"[red]{exc}[/]")
             return
-        # Resolve explicit local path (relative or absolute) and list kits if it exists
-        explicit_root = _resolve_explicit_repo_path(root, configured_repo)
-        if explicit_root:
-            emit_repo_source(explicit_root, "env")
-            entries = _collect_repo_entries(explicit_root)
-            _emit_entries(entries, json_out)
-            return
+        _emit_entries(entries, json_out, f"Available Innovation Kits: {configured_repo} [ENV]")
+        return
 
     # 3) Auto-discovered innovation-kit-repository in ancestor directories
     repo_root, source_kind = resolve_repo_root(root)
     if repo_root is None:
         if json_out:
-            typer.echo("[]")
+            print("[]")
         else:
-            typer.echo("No local innovation-kit-repository found")
+            console.print("[yellow]No local innovation-kit-repository found[/]")
         return
-    emit_repo_source(repo_root, source_kind)
+
+    if not json_out:
+        emit_repo_source(repo_root, source_kind)
     entries = _collect_repo_entries(repo_root)
-    _emit_entries(entries, json_out)
+
+    roots_str = ", ".join(str(r) for r in repo_root)
+    source_str = f"[{source_kind}]" if source_kind else "<unknown>"
+    title = f"Available Innovation Kits: {roots_str} {source_str}"
+    _emit_entries(entries, json_out, title)
+
+
+def _emit_installed_kits(root: Path, json_out: bool) -> None:
+    installed = load_installed_kits(root)
+    if json_out:
+        print(json.dumps(installed, ensure_ascii=False, indent=2))
+        return
+    if not installed:
+        console.print(f"[yellow]No kits installed under: {root}[/]")
+        return
+
+    table = Table(
+        title=f"Installed Innovation Kits under: {root}",
+        header_style="bold cyan",
+        title_justify="left",
+    )
+    table.add_column("Kit ID", style="bold", justify="left")
+    table.add_column("Version", justify="left")
+    table.add_column("Source", overflow="fold", justify="left")
+    table.add_column("Path", overflow="fold", justify="left")
+    for kit in sorted(installed, key=lambda x: x.get("id", "")):
+        table.add_row(
+            kit.get("id", ""),
+            kit.get("version", ""),
+            kit.get("source", ""),
+            kit.get("path", ""),
+        )
+    console.print(table)
 
 
 def _collect_repo_entries(repo_roots: List[Path]) -> List[Dict[str, str]]:
@@ -69,18 +96,29 @@ def _collect_repo_entries(repo_roots: List[Path]) -> List[Dict[str, str]]:
             kit_name = manifest.get("id") or child.name
             version = manifest.get("version") or "0.0.0"
             entries.append({"id": kit_name, "version": version, "path": str(child)})
+    entries.sort(key=lambda entry: entry.get("id", ""))
     return entries
 
 
-def _emit_entries(entries: List[Dict[str, str]], json_out: bool) -> None:
+def _emit_entries(entries: List[Dict[str, str]], json_out: bool, title: str) -> None:
     if json_out:
-        typer.echo(json.dumps(entries, ensure_ascii=False, indent=2))
+        print(json.dumps(entries, ensure_ascii=False, indent=2))
         return
     if not entries:
-        typer.echo("No available kits found")
+        console.print("[yellow]No available kits found[/]")
         return
+
+    table = Table(title=title, header_style="bold cyan", title_justify="left")
+    table.add_column("Kit ID", style="bold", justify="left")
+    table.add_column("Version", justify="left")
+    table.add_column("Location", overflow="fold", justify="left")
     for entry in entries:
-        typer.echo(f"{entry['id']} {entry['version']}")
+        table.add_row(
+            entry.get("id", ""),
+            entry.get("version", ""),
+            entry.get("path", ""),
+        )
+    console.print(table)
 
 
 def _resolve_explicit_repo_path(root: Path, repo_location: str) -> Path | None:

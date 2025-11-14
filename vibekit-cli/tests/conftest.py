@@ -1,6 +1,5 @@
 import os
 import shutil
-import json
 import subprocess
 import pytest
 from pathlib import Path
@@ -8,6 +7,7 @@ from pathlib import Path
 CLI_EXECUTABLE = shutil.which("vibekit") or "vibekit"
 
 DUMMY_GIT_PAT = "dummy-pat-for-tests"
+
 
 def _prepare_local_template_repo(base: Path) -> Path:
     repo_dir = base / "local_template_repo"
@@ -25,6 +25,7 @@ def _prepare_local_template_repo(base: Path) -> Path:
     subprocess.run(["git", "add", "."], cwd=repo_dir, check=True)
     subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=repo_dir, check=True)
     return repo_dir
+
 
 @pytest.fixture
 def run_cli(tmp_path: Path):
@@ -44,6 +45,7 @@ def run_cli(tmp_path: Path):
             )
         return result
     return _run
+
 
 @pytest.fixture
 def ensure_baseline(run_cli, tmp_path: Path):

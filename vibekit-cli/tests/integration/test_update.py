@@ -6,8 +6,8 @@ def test_update_missing_source(run_cli, tmp_path: Path):
     (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
     run_cli(tmp_path, "init", check=True)
     result = run_cli(tmp_path, "update", "no-such-kit")
-    assert result.returncode == 2
-    assert "not found" in result.stdout.lower()
+    assert result.returncode == 1
+    assert "not found in local repository" in result.stderr.lower()
 
 
 def test_update_not_installed(run_cli, tmp_path: Path):
@@ -17,8 +17,8 @@ def test_update_not_installed(run_cli, tmp_path: Path):
     (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
     run_cli(tmp_path, "init", check=True)
     result = run_cli(tmp_path, "update", "demo-up")
-    assert result.returncode == 0
-    assert "not installed" in result.stdout.lower()
+    assert result.returncode == 2
+    assert "package 'demo-up' is not installed" in result.stdout.lower()
 
 
 def test_update_no_newer(run_cli, tmp_path: Path):

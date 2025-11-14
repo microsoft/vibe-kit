@@ -152,9 +152,10 @@ if [ -d "${FRONTEND_DIR}" ]; then
       echo "   npm install attempt ${FRONTEND_NPM_ATTEMPT} failed."
       if [ "${FRONTEND_NPM_ATTEMPT}" -lt "${MAX_NPM_ATTEMPTS}" ]; then
         echo "   Cleaning frontend install artifacts before retry..."
-        rm -rf node_modules .npm-store .turbo .cache "${NPM_STORE_PATH}"
+        CACHE_PATH="${NPM_CACHE_DIR:-${NPM_CONFIG_CACHE:-}}"
+        rm -rf node_modules .turbo .cache ${CACHE_PATH:+"$CACHE_PATH"}
         if command -v npm >/dev/null 2>&1; then
-          npm store prune --silent || true
+          npm cache clean --force >/dev/null 2>&1 || true
         fi
         sleep 2
       fi

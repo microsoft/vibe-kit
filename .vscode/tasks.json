@@ -81,7 +81,7 @@
     {
       "label": "Wait for backend",
       "type": "shell",
-      "command": "cd ${workspaceFolder}/frontend && npm install && until curl -f http://localhost:8009/docs; do sleep 1; done",
+      "command": "cd ${workspaceFolder}/frontend && npm install && until curl -f http://localhost:8010/docs; do sleep 1; done",
       "options": {
         "cwd": "${workspaceFolder}"
       },

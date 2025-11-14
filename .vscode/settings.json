@@ -161,7 +161,6 @@
         },
         // Approve common development command lines
         "cd": true,
-        "pnpm": true,
         "curl": true,
         "source": true,
         "uvicorn": true,
