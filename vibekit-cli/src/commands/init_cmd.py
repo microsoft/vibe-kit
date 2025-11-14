@@ -158,7 +158,7 @@ def _clone_template_repo(source_url, target_path, verbose: bool) -> List[str]:
 
     clone_cmd += [source_url, str(target_path)]
 
-        # No interactive prompts
+    # No interactive prompts
     env = os.environ.copy()
     env["GIT_TERMINAL_PROMPT"] = "0"
 
