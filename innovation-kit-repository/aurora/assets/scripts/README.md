@@ -4,6 +4,7 @@ Standalone tools for working with Aurora beyond the Norway example.
 
 ## Quick Reference
 
+- **setup_region.py** - One-command regional adaptation (creates working prototype with data downloads)
 - **quick_verify_netcdf.py** - Fast file inspection (no dependencies)
 - **check_aurora_dataset.py** - Validate NetCDF has required Aurora variables
 - **download_era5_subset.py** - Automate CDS API downloads for custom regions
@@ -11,12 +12,48 @@ Standalone tools for working with Aurora beyond the Norway example.
 
 ## When to Use These
 
-After completing the Norway example, use these scripts to:
+**Quick regional adaptation**: Use `setup_region.py` first (see below) for automated prototype creation.
+
+After completing the Norway example, use the other scripts to:
 - Download ERA5 data for your own region/timeframe
 - Validate custom datasets before running inference
 - Debug data issues without running full Aurora model
 
 ## Usage
+
+### Regional Adaptation (Recommended Start)
+
+Create a working prototype for any region in one command:
+
+```bash
+# 1. Configure CDS credentials (one-time setup)
+cd ../
+cp .env.example .env
+```
+
+Edit `.env` and add your CDS API key:
+```bash
+CDS_API_KEY=your-api-key-here
+```
+
+Then generate the regional prototype:
+
+```bash
+# 2. Generate regional prototype
+cd scripts
+python3 setup_region.py \
+    --name "Hawaii" \
+    --lat-min 18.5 --lat-max 23.5 \
+    --lon-min -161 --lon-max -154
+
+# Creates: ../hawaii-example/ with:
+# - Adjusted bounds (grid dimensions divisible by 16)
+# - Downloaded ERA5 data (surface, atmospheric, static)
+# - Frontend with Hawaii map bounds and observations
+# - Ready-to-run inference scripts
+```
+
+See [docs/expand-norway-example.md](../../docs/expand-norway-example.md) for complete instructions including CDS account setup.
 
 ### Quick Verification (No Dependencies)
 

@@ -18,7 +18,19 @@ ReferenceLinks:
 
 **Installation:** Run `vibekit install aurora` from your workspace root, then reload VS Code window (Ctrl+Shift+P → "Developer: Reload Window") to activate the Aurora Forecast chat mode.
 
-**Learn by doing:** This kit centers on the Norway mainland forecast prototype (64×112 grid)—a complete, working example that teaches Aurora's capabilities through hands-on experience.
+### What This Kit Helps You Build
+
+Aurora enables **local, AI-powered weather forecasting** without expensive numerical weather models or cloud APIs. This kit teaches you to build production-ready forecast applications through a complete reference implementation:
+
+**The Norway Example demonstrates:**
+- **End-to-end workflow** – From ERA5 observations → Aurora inference → interactive web visualization
+- **Regional adaptation** – How to customize for any location (your farm, offshore platform, city grid, etc.)
+- **Production patterns** – Data pipelines, caching, error handling, and deployment strategies
+- **Real-world constraints** – Grid requirements, memory optimization, and forecast stability
+
+**Why Norway as the reference?** The 64×112 mainland grid (57–73°N, 4–32°E) is large enough to demonstrate multi-day forecasts and coastal dynamics, yet small enough to run inference on a laptop CPU in ~45 minutes. It's a Goldilocks example: complex enough to be realistic, simple enough to understand and modify.
+
+**Learn by doing:** Work through the Norway example, then adapt it for your region using the automated setup tools added in this release.
 
 ### Prerequisites
 Before starting, ensure you have:
@@ -34,8 +46,18 @@ Before starting, ensure you have:
 - **[docs/norway-technical-guide.md](.vibe-kit/innovation-kits/aurora/docs/norway-technical-guide.md)** – Understand how Aurora inference works (2 timesteps, 64×112 grid, 24-hour stability)
 - **[assets/norway-example/](.vibe-kit/innovation-kits/aurora/assets/norway-example/)** – Complete reference implementation (scripts, frontend, mainland Norway ERA5 bundle)
 
+### Adapt to Your Region (Quick Start)
+
+Want to try Aurora for Hawaii, California, or your own region? Use the one-command regional adapter:
+
+1. **Get CDS API credentials** (free): https://cds.climate.copernicus.eu → copy API key
+2. **Configure credentials**: `cp .env.example .env` and paste your key
+3. **Run setup**: `python3 setup_region.py --name "Hawaii" --lat-min 18.5 --lat-max 23.5 --lon-min -161 --lon-max -154`
+
+See **[docs/expand-norway-example.md](.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md)** for complete instructions and common regions.
+
 ### Build Your Own
-- **[docs/expand-norway-example.md](.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md)** – **Customization Guide**: Adapt the Norway example for your region, variables, and forecast horizon (modify working code)
+- **[docs/expand-norway-example.md](.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md)** – **Customization Guide**: Adapt the Norway example for your region, variables, and forecast horizon (modify working code). Includes automated setup_region.py workflow and manual methods.
 - **[docs/aurora-prototyping-guide.md](.vibe-kit/innovation-kits/aurora/docs/aurora-prototyping-guide.md)** – **From Scratch Guide**: Build your own Aurora application from fundamentals (learn core concepts without starting from an example)
 - **[docs/data-integration.md](.vibe-kit/innovation-kits/aurora/docs/data-integration.md)** – Connect your own CDS ERA5 data sources and convert to Aurora format
 - **[docs/application-patterns.md](.vibe-kit/innovation-kits/aurora/docs/application-patterns.md)** – Scenario templates for coastal forecasting, energy, agriculture, and maritime
@@ -82,7 +104,7 @@ Each doc clearly labels this as opt-in so readers understand the prototype conti
 ## Quick Wins Checklist
 
 After completing the quick start, you should be able to:
-- ✓ Run Aurora inference on a 64×112 grid in ~45 minutes (CPU) or ~6 minutes (GPU)
+- ✓ Run Aurora inference locally (GPU recommended for faster processing)
 - ✓ Generate 24-hour forecasts with 6-hour timesteps (4 predictions)
 - ✓ Visualize wind speed, temperature, and pressure on an interactive map
 - ✓ Download your own ERA5 data for any region using the provided utilities

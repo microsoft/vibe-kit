@@ -96,7 +96,10 @@ def load_era5_input(surf_path: Path, atmos_path: Path, static_path: Path) -> Bat
 
     # Metadata
     lat = torch.from_numpy(ds_surf["latitude"].values[:lat_crop].astype(np.float32))
-    lon = torch.from_numpy(ds_surf["longitude"].values[:lon_crop].astype(np.float32))
+    lon_raw = ds_surf["longitude"].values[:lon_crop].astype(np.float32)
+    # Convert negative longitudes to 0-360 range (Aurora requirement)
+    lon_raw = np.where(lon_raw < 0, lon_raw + 360, lon_raw)
+    lon = torch.from_numpy(lon_raw)
 
     # atmos_levels must be tuple of ints per official docs
     atmos_levels = tuple(int(level) for level in ds_atmos["pressure_level"].values)
@@ -202,6 +205,8 @@ def save_forecast_netcdf(
     first_pred = predictions[0]
     lats = first_pred.metadata.lat.cpu().numpy()
     lons = first_pred.metadata.lon.cpu().numpy()
+    # Convert longitudes back to -180 to 180 range for visualization (Leaflet expects this)
+    lons = np.where(lons > 180, lons - 360, lons)
 
     # Create xarray Dataset
     ds = xr.Dataset(
@@ -262,7 +267,9 @@ if __name__ == "__main__":
     print("Aurora Inference: Norway Regional Forecast")
     print("=" * 70)
     print(f"\nDevice: {DEVICE}")
-    print("\nHang tight -- initializing Aurora dependencies. The first progress update can take 20-30 seconds.")
+    print(
+        "\nHang tight -- initializing Aurora dependencies. The first progress update can take several minutes or more, depending on your hardware."
+    )
     sys.stdout.flush()
 
     # Load input data

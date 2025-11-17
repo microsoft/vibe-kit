@@ -4,6 +4,8 @@
 
 This guide walks you through the 64×112 Norway demo. First you'll explore June 1–7 observations, then generate June 8 predictions using Aurora AI.
 
+> **Want a different region?** After completing this tutorial, use `setup_region.py` to adapt the prototype for Hawaii, California, or your own region in one command. See [expand-norway-example.md](expand-norway-example.md) for instructions.
+
 ---
 
 ## Prerequisites
@@ -11,7 +13,7 @@ This guide walks you through the 64×112 Norway demo. First you'll explore June 
 ✅ **Vibe Kit installed** with Aurora Innovation Kit  
 ✅ **Dev container running** (recommended) or local Python 3.12+ / Node.js 18+  
 ✅ **~6GB disk space** (Aurora checkpoint + dependencies, needed for inference only)  
-✅ **GPU optional** (~6 min on A100, ~45 min on CPU for inference)
+✅ **GPU optional** (significantly faster than CPU)
 
 ---
 

@@ -70,14 +70,39 @@ save_forecast(predictions, "data/norway_june8_forecast.nc")
 
 ### Use Case 2: Rapid Regional Customization
 
-**Scenario**: Generate a forecast for a new geography by cloning the Norway workflow and downloading a fresh ERA5 subset.
+**Scenario**: Adapt the Norway prototype for a new region in one command.
+
+**Recommended approach**: Use `setup_region.py` (automates download, template copying, frontend generation):
+
+# 1. Configure CDS credentials (one-time setup)
+```bash
+cd .vibe-kit/innovation-kits/aurora/assets
+cp .env.example .env
+# Edit .env and add: CDS_API_KEY=your-api-key-here
+```
+Pause and instruct the user to edit `.env` with their CDS API key before proceeding.
+
+# 2. Generate region-specific prototype (example: California)
+```bash
+cd scripts
+python3 setup_region.py \
+    --name "California" \
+    --lat-min 32 --lat-max 42 \
+    --lon-min -124 --lon-max -114
+
+# Creates: .vibe-kit/innovation-kits/aurora/assets/california-example/
+# Downloads: 3 ERA5 files (surface, atmospheric, static)
+# Generates: Frontend with California bounds and June 1-7 observations
+```
+
+**Manual method** (if you need custom control, see [expand-norway-example.md](expand-norway-example.md)):
 
 ```bash
 # 1. Fetch ERA5 tiles for the new region (example: Bay of Biscay, 48x80 grid)
 cd .vibe-kit/innovation-kits/aurora/assets/scripts
 python download_era5_subset.py \
-    --dataset surface \
-    --area "50/-10/40/0" \
+    --dataset reanalysis-era5-single-levels \
+    --area 50 -10 40 0 \
     --start-date 2025-06-01 \
     --end-date 2025-06-08 \
     --output ../norway-example/data/biscay_surface.nc

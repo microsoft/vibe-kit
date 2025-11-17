@@ -20,6 +20,7 @@ from commands.common import emit_repo_source, ensure_minimal_kit_yaml
 console = Console()
 err_console = Console(stderr=True)
 
+
 def fix_directory_permissions(directory: Path) -> None:
     """
     Recursively fix permissions on copied directories to ensure they're writable.
@@ -45,13 +46,27 @@ def run_install(kit_name: str):
     load_repo_env(root)
     installed = {k.get("id"): k for k in load_installed_kits(root)}
     if kit_name in installed:
-        _emit_status_and_exit(
-            [
-                f"[yellow]{kit_name} already installed (recorded in innovation-kits.json)[/]"
-            ],
-            is_error=False,
-            exit_code=0,
+        console.print(
+            _render_status_panel(
+                [f"[yellow]{kit_name} already installed (recorded in innovation-kits.json)[/]"],
+                is_error=False,
+            )
         )
+        # Show post-install instructions even when already installed
+        kits_dir = state_dir(root) / "innovation-kits"
+        target = kits_dir / kit_name
+        if target.exists():
+            manifest_meta = extract_manifest_metadata(prefer_manifest_file(target))
+            if manifest_meta and manifest_meta.get("post_install_instructions"):
+                console.print(
+                    Panel(
+                        Markdown(manifest_meta["post_install_instructions"]),
+                        title="Next Steps",
+                        title_align="left",
+                        border_style="cyan",
+                    )
+                )
+        raise typer.Exit(code=0)
 
     kits_dir = state_dir(root) / "innovation-kits"
     kits_dir.mkdir(parents=True, exist_ok=True)
@@ -135,11 +150,15 @@ def run_install(kit_name: str):
                     True,
                     6,
                 )
-            manifest_meta = remote_manifest_meta or extract_manifest_metadata(prefer_manifest_file(target)) or {
-                "id": kit_name,
-                "name": kit_name,
-                "version": "0.0.0",
-            }
+            manifest_meta = (
+                remote_manifest_meta
+                or extract_manifest_metadata(prefer_manifest_file(target))
+                or {
+                    "id": kit_name,
+                    "name": kit_name,
+                    "version": "0.0.0",
+                }
+            )
 
             record_install(root, manifest_meta, target, source_kind=source_kind)
             ensure_minimal_kit_yaml(target, kit_name, manifest_meta)

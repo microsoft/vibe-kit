@@ -34,18 +34,27 @@ When adapting the Norway example to your region or time period, use the provided
 
 ### Quick Method: Use download_era5_subset.py
 
-**Prerequisites:**
-1. [Create a Copernicus account and accept ERA5 licences](https://cds.climate.copernicus.eu/api-how-to).
-2. Add your key to the environment (recommended):
-    ```bash
-    # .env or shell profile
-    CDS_API_KEY="<UID>:<API_KEY>"
-    # Optional if you mirror the API endpoint
-    # CDS_API_URL="https://cds.climate.copernicus.eu/api"
-    ```
-3. Install the CDS API client: `pip install cdsapi`
+#### **Prerequisites:**
 
-> Already have `~/.cdsapirc` from other projects? That continues to work, but it’s no longer required for the Aurora kit.
+1. **Get CDS credentials** (free, takes 2 minutes):
+   - Create account at https://cds.climate.copernicus.eu
+   - Visit https://cds.climate.copernicus.eu/api-how-to after email verification
+   - Copy your API key (long alphanumeric string)
+
+2. **Configure credentials** (recommended method):
+   ```bash
+   cd .vibe-kit/innovation-kits/aurora/assets
+   cp .env.example .env
+   ```
+    Instruct user:
+    - Edit .env locally and set: CDS_API_KEY=your-api-key-here
+    - Keep this file private—never paste keys into chat or source control.
+   
+   The `.env` file is gitignored, keeping your credentials local.
+   
+   **Alternative**: Legacy `~/.cdsapirc` file still works if you already have one from other projects.
+
+3. **Install the CDS API client**: `pip install cdsapi` (or use provided `requirements.txt`)
 
 **Download surface data:**
 ```bash

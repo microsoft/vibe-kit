@@ -1,0 +1,2 @@
+# Keep .env file with credentials out of git
+.env

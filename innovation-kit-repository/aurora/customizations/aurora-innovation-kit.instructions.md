@@ -9,7 +9,9 @@ applyTo: "**/*"
 
 ## What is Aurora?
 
-Microsoft's 1.3B-parameter foundation model for atmosphere/ocean forecasting. 0.1°-0.4° global predictions, 5,000× faster than traditional weather models. Open-source and runs locally.
+Microsoft's AI model that predicts weather up to 24 hours ahead—no expensive supercomputers or cloud APIs required. It's 5,000× faster than traditional forecasting and runs on your laptop.
+
+**What this kit teaches**: How to run AI weather forecasting locally. You'll work through a complete example—loading real weather data, running Aurora's inference engine, and visualizing predictions on an interactive map. By the end, you'll understand the full pipeline from raw data to forecast output.
 
 ## Kit Location
 
@@ -29,8 +31,9 @@ Microsoft's 1.3B-parameter foundation model for atmosphere/ocean forecasting. 0.
 
 **Build Your Own**:
 
-- `.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md` (**Customization**: Expand the Norway example for your region)
+- `.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md` (**Regional Adaptation**: Use automated setup to create forecasts for your region)
 - `.vibe-kit/innovation-kits/aurora/docs/aurora-prototyping-guide.md` (**From Scratch**: Build from fundamentals)
+- `.vibe-kit/innovation-kits/aurora/assets/scripts/setup_region.py` (**Automation**: One-command regional setup with ERA5 download)
 
 **Data Integration**: `.vibe-kit/innovation-kits/aurora/docs/data-integration.md` (CDS ERA5 downloads, format conversion)
 
@@ -46,7 +49,8 @@ Microsoft's 1.3B-parameter foundation model for atmosphere/ocean forecasting. 0.
 
 - **"How do I start?" / "Launch reference app"** → Step 1: Launch the frontend to explore June 1–7 observations first (see Workflow below)
 - **"How does it work?"** → `.vibe-kit/innovation-kits/aurora/docs/norway-technical-guide.md` (64×112 grid, SPATIAL_PATCH_SIZE=16, 2-timestep input)
-- **"Adapt Norway example"** → `.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md` (Customization: change region, variables, deploy)
+- **"Adapt for my region" / "Hawaii forecast" / "Custom location"** → Use automated setup: `python .vibe-kit/innovation-kits/aurora/assets/scripts/setup_region.py --name YourRegion --lat-min X --lat-max Y --lon-min A --lon-max B`
+- **"Customize Norway example"** → `.vibe-kit/innovation-kits/aurora/docs/expand-norway-example.md` (Manual adaptation: change variables, time ranges, deploy)
 - **"Build from scratch"** → `.vibe-kit/innovation-kits/aurora/docs/aurora-prototyping-guide.md` (Learn fundamentals, write own code)
 - **"Get my data"** → `.vibe-kit/innovation-kits/aurora/docs/data-integration.md` (CDS credentials, ERA5 downloads)
 - **"Errors?"** → `.vibe-kit/innovation-kits/aurora/docs/troubleshooting.md` (Common issues + fixes)
@@ -68,11 +72,59 @@ When user asks to "launch the reference app" or "get started":
 3. User explores June 1–7 ERA5 observations; "Aurora Predictions" toggle is disabled (this is expected)
 4. Wait for user to return and ask about predictions
 
+### Quick Regional Adaptation (Alternative Start)
+
+When user wants to adapt Norway example to their region:
+
+1. **Set up CDS credentials** (if not already done):
+
+   ```bash
+   cd .vibe-kit/innovation-kits/aurora/assets
+   cp .env.example .env
+   # Edit .env and add your CDS_API_KEY from https://cds.climate.copernicus.eu/how-to-api
+   ```
+
+   Pause and instruct the user to edit `.env` with their CDS API key before proceeding.
+
+2. **Run setup_region.py**:
+
+   ```bash
+   cd .vibe-kit/innovation-kits/aurora/assets/scripts
+   python3 setup_region.py \
+     --name "Region Name" \
+     --lat-min <south> --lat-max <north> \
+     --lon-min <west> --lon-max <east>
+   ```
+
+   Script will:
+
+   - Validate and adjust bounds (divisible by 16)
+   - Copy Norway template
+   - Download ERA5 data (3 files: surface, atmospheric, static)
+   - Generate frontend with observations
+
+3. **Launch the new regional frontend**:
+
+   ```bash
+   cd ../<region>-example/frontend
+   npm install
+   npm run dev
+   ```
+
+4. **Continue to Step 2: Run Forecast Inference** below to run inference for predictions
+
+**Note**: For negative longitude regions (Americas, Pacific), longitude conversion is handled automatically in run_aurora_inference.py.
+
 ### Step 2: Run Forecast Inference
 
 When user returns asking about predictions or June 8:
 
-1. **Install Python requirements first** (always required before inference):
+1. **Open a NEW terminal window** (don't kill the frontend dev server):
+
+   - Tell user to press Ctrl+Shift+` (or Cmd+Shift+`) to open a new terminal
+   - When running commands via `run_in_terminal`, use a fresh terminal ID to avoid stopping the dev server
+
+2. **Install Python requirements first** (always required before inference):
 
    ```bash
    cd .vibe-kit/innovation-kits/aurora/assets/norway-example
@@ -81,7 +133,7 @@ When user returns asking about predictions or June 8:
 
    First run downloads PyTorch (~2 GB) and dependencies.
 
-2. **Run Aurora inference**:
+3. **Run Aurora inference**:
 
    ```bash
    python3 scripts/run_aurora_inference.py \
@@ -91,9 +143,9 @@ When user returns asking about predictions or June 8:
      --output data/norway_june8_forecast.nc
    ```
 
-   Expect ~45 min on CPU or ~6 min on A100. First run downloads the 5.03 GB Aurora checkpoint to `~/.cache/aurora`.
+   First run downloads the 5.03 GB Aurora checkpoint to `~/.cache/aurora`. Inference time varies by hardware (GPU recommended for faster processing).
 
-3. **Convert NetCDF to TypeScript**:
+4. **Convert NetCDF to TypeScript** (same terminal as inference):
    ```bash
    python3 scripts/build_forecast_module.py \
      data/norway_june8_forecast.nc \
@@ -104,14 +156,15 @@ When user returns asking about predictions or June 8:
 
 ### Step 3: Refresh Frontend
 
-1. Track active terminals—if Vite is still running, tell user to **hard refresh** browser (Ctrl+Shift+R / Cmd+Shift+R)
-2. If Vite stopped, restart it:
+1. **Switch back to the original terminal** where Vite is running
+2. If Vite is still running, tell user to **hard refresh** browser (Ctrl+Shift+R / Cmd+Shift+R)
+3. If Vite stopped, restart it (in that original terminal):
    ```bash
    cd .vibe-kit/innovation-kits/aurora/assets/norway-example/frontend
    npm run dev
    ```
-3. Once refreshed, "Aurora Predictions" toggle enables
-4. User can now scrub June 8 forecast alongside June 1–7 observations
+4. Once refreshed, "Aurora Predictions" toggle enables
+5. User can now scrub June 8 forecast alongside June 1–7 observations
 
 ### Step 4: Celebrate & Offer Next Steps
 
@@ -179,7 +232,7 @@ python3 scripts/run_aurora_inference.py \
 	--output data/norway_june8_forecast.nc
 ```
 
-Expect ~45 minutes on CPU or ~6 minutes on a single A100-class GPU for the 64×112 grid. The first run downloads the 5.03 GB checkpoint to `~/.cache/aurora`.
+The first run downloads the 5.03 GB checkpoint to `~/.cache/aurora`. Inference time varies by hardware (GPU recommended for faster processing).
 
 ## Key Technical Details
 
@@ -188,6 +241,7 @@ Expect ~45 minutes on CPU or ~6 minutes on a single A100-class GPU for the 64×1
 - **Output**: 24-hour forecast at 6-hour intervals
 - **Variables**: 2m temperature, 10m u/v wind, surface pressure (from ERA5)
 - **Model**: microsoft-aurora package, downloads checkpoint automatically (~5GB first run)
+- **Longitude handling**: Aurora requires 0-360° range internally; run_aurora_inference.py converts negative longitudes automatically (input & output)
 
 ## Official Resources
 
