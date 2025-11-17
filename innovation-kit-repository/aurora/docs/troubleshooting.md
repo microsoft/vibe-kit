@@ -129,12 +129,16 @@ python3 scripts/quick_inspect.py data/*.nc
 **Fix:**
 1. Set credentials via environment variable (preferred):
   ```bash
-  # .env or shell profile
-  CDS_API_KEY="YOUR_UID:YOUR_API_KEY"
-  # Optional override
-  # CDS_API_URL="https://cds.climate.copernicus.eu/api"
+  # Create .env file in assets/ directory:
+  cd .vibe-kit/innovation-kits/aurora/assets
+  cp .env.example .env
+  # Edit .env and add:
+  CDS_API_KEY=your-api-key-here
   ```
-  Existing `~/.cdsapirc` entries continue to work, but env vars avoid hidden-file issues on Windows.
+  
+  The CDS API key is a simple alphanumeric string (e.g., `a1b2c3d4-e5f6-7890-abcd-ef1234567890`), not the older UID:KEY format.
+  
+  Existing `~/.cdsapirc` entries continue to work, but `.env` method is recommended for better visibility and cross-platform compatibility.
 
 2. Get API key from [CDS](https://cds.climate.copernicus.eu/how-to-api) (Account → "API key")
 

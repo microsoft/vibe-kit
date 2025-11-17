@@ -8,7 +8,8 @@
 > - For fine-tuning or custom model variants, route them to the [Aurora Fine-tuning Innovation Kit](../../aurora-finetune/) rather than extending this quick-start.
 > **Which guide should I use?**
 > - **This guide (From Scratch):** You want to learn Aurora's core concepts—data requirements, batch construction, inference patterns—and build your own application without starting from an existing example.
-- **[expand-norway-example.md](expand-norway-example.md) (Customization):** You've run the Norway example and want to adapt it for your region. Start with working code and modify incrementally.
+> - **[expand-norway-example.md](expand-norway-example.md) (Customization):** You've run the Norway example and want to adapt it for your region. Start with working code and modify incrementally. Includes automated `setup_region.py` for one-command regional adaptation.
+> - **Quick Regional Adaptation:** For fastest results, use `setup_region.py` after getting CDS credentials (see expand-norway-example.md). Creates working Hawaii/California/custom prototypes in 5-10 minutes.
 
 > **When to fine-tune Aurora:**
 > This guide uses the **pretrained base Aurora model** with your own ERA5 data for inference. The base model works well for general weather forecasting.

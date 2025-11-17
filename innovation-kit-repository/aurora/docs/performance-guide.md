@@ -7,7 +7,7 @@
 ## Performance Metrics
 
 **Inference speed**: ~1.5 s for 6-hour rollout on A100 vs ~2 h ECMWF IFS HRES. (source: Microsoft Research blog)
-**Norway baseline runtime**: 24-hour (4-step) rollout on the 64×112 mainland grid completes in ~6 min on an A100 and ~45 min on the dev-container CPU.
+**Norway baseline runtime**: 24-hour (4-step) rollout on the 64×112 mainland grid. Timing varies significantly by hardware—GPU recommended but CPU supported.
 **Memory footprint**: Expect ≈3–4 GB of GPU VRAM (A100) or ~14 GB system RAM during the 64×112 rollout; monitor with `nvidia-smi` / `htop` while experimenting.
 **Checkpoint download**: First run pulls the ~5 GB `aurora-0.25-small-pretrained.ckpt` checkpoint from Hugging Face; budget 3–5 minutes on a 1 Gbps link.
 **Frontend bundles**: Regenerated TypeScript payloads weigh in at ~54 MB (`frontend/src/data/auroraForecast.ts`) and ~7.6 MB (`frontend/src/data/auroraForecastPredictions.ts`); they remain gitignored and should be rebuilt locally via `scripts/build_forecast_module.py`.

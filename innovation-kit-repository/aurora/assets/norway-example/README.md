@@ -15,7 +15,7 @@ This directory contains the end-to-end demo used in the `global-demo` branch. It
 
 Generated TypeScript payloads (`auroraForecast.ts`, `auroraForecastPredictions.ts`, `globalForecast.ts`) are gitignored to keep the repo small. Follow the regeneration commands below to rebuild them locally.
 
-> **Planning a new region?** Run `python ../../scripts/validate_grid.py --lat-min ... --lat-max ... --lon-min ... --lon-max ...` first to check that your latitude/longitude bounds align with Aurora's 16×16 patch requirement before pulling fresh ERA5 tiles.
+> **Planning a new region?** Use `python ../../scripts/setup_region.py --name "Your Region" --lat-min X --lat-max Y --lon-min A --lon-max B` to automatically create a working prototype with ERA5 data and adjusted bounds. See [docs/expand-norway-example.md](../../docs/expand-norway-example.md) for full instructions including CDS credential setup.
 
 ## Quick Start
 
@@ -72,6 +72,6 @@ See `INNOVATION_KIT_UPDATES.md` for the exact download commands that reproduce t
 - Grid: 64 latitudes × 112 longitudes (7,168 cells) aligned to Aurora's 16× patch size.
 - Lookback window: June 1–7, 2025 observations (4 timesteps per day) → autoregressive forecast for June 8 at 00/06/12/18 UTC.
 - Model: `microsoft/aurora` (default checkpoint) loaded with `torch.compile` acceleration.
-- Runtime: ~6 minutes on GPU (A100) or ~45 minutes on CPU in the dev container.
+- Runtime: varies by hardware (GPU recommended for faster processing).
 - Output: `data/norway_june8_forecast.nc` plus TypeScript module for the viewer.
 

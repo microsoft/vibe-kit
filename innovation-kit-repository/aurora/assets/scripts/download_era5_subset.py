@@ -121,6 +121,59 @@ def build_request(args: argparse.Namespace) -> dict:
     return request
 
 
+def load_env_file() -> None:
+    """Load credentials from .env file in assets directory if present."""
+    env_path = Path(__file__).parent.parent / ".env"
+    if env_path.exists():
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    if key and value and not os.getenv(key):
+                        os.environ[key] = value
+
+
+def check_credentials() -> str | None:
+    """Check for CDS credentials from multiple sources."""
+    # Try environment variables first
+    env_key = os.getenv("CDS_API_KEY") or os.getenv("ADS_API_KEY")
+    if env_key and env_key != "your-uid:your-api-key-here":
+        return env_key
+
+    # Try ~/.cdsapirc
+    cdsapirc = Path.home() / ".cdsapirc"
+    if cdsapirc.exists():
+        try:
+            with open(cdsapirc) as f:
+                for line in f:
+                    if line.startswith("key:"):
+                        key = line.split(":", 1)[1].strip()
+                        if key and key != "<UID>:<API_KEY>":
+                            return key
+        except Exception:
+            pass
+
+    return None
+
+
+def exit_with_credentials_help() -> None:
+    """Guide the user to configure credentials manually and exit."""
+    print("\nERROR: CDS API credentials not found.")
+    print("\nConfigure credentials before re-running this command:")
+    print("  1. Create an account: https://cds.climate.copernicus.eu")
+    print("  2. Copy your API key from https://cds.climate.copernicus.eu/api-how-to")
+    print("  3. In the Aurora assets directory, run:")
+    print("       cd .vibe-kit/innovation-kits/aurora/assets")
+    print("       cp .env.example .env")
+    print("       # Open .env locally and set: CDS_API_KEY=your-api-key-here")
+    print("     (Keep keys out of chat logs; `.env` is gitignored.)")
+    print("\nAlternatively, set the environment variable in your shell: ")
+    print("  export CDS_API_KEY='uid:secret'")
+    print("\nExisting ~/.cdsapirc files are still respected if already configured.")
+    raise SystemExit(1)
+
+
 def main() -> None:
     import cdsapi  # type: ignore  # deferred import; install via `pip install cdsapi`
 
@@ -128,17 +181,22 @@ def main() -> None:
     target = Path(args.target).expanduser()
     target.parent.mkdir(parents=True, exist_ok=True)
 
-    env_key = os.getenv("CDS_API_KEY") or os.getenv("ADS_API_KEY")
-    env_url = os.getenv("CDS_API_URL") or os.getenv("ADS_API_URL")
+    # Load .env file first
+    load_env_file()
 
+    # Check for credentials
+    api_key = check_credentials()
+    if not api_key:
+        exit_with_credentials_help()
+
+    assert api_key is not None
+
+    env_url = os.getenv("CDS_API_URL") or os.getenv("ADS_API_URL")
     default_url = args.api_url or infer_default_api_url(args.dataset)
     client_url = env_url or default_url
 
-    if env_key:
-        print("Detected API key in environment; using explicit credential.")
-        client = cdsapi.Client(url=client_url, key=env_key)
-    else:
-        client = cdsapi.Client(url=client_url)
+    print(f"Using CDS API key: {api_key[:8]}...")
+    client = cdsapi.Client(url=client_url, key=api_key)
     request = build_request(args)
 
     print(f"Submitting request to {client_url} for dataset {args.dataset}...")

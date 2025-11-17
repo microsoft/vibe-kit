@@ -25,7 +25,126 @@
 
 ---
 
-## Overview
+## Quick Regional Adaptation (Recommended)
+
+**Want to adapt the Norway prototype to your region in one command?** Use the `setup_region.py` script.
+
+### Step 1: Get CDS API Credentials
+
+Aurora uses ERA5 climate data from the Copernicus Climate Data Store (CDS). You need a free API key:
+
+1. Create an account at https://cds.climate.copernicus.eu
+2. After email verification, visit https://cds.climate.copernicus.eu/api-how-to
+3. Copy your API key (long string of letters and numbers)
+
+### Step 2: Configure Credentials
+
+In the Aurora assets directory, copy the example file:
+
+```bash
+cd .vibe-kit/innovation-kits/aurora/assets
+cp .env.example .env
+```
+
+Edit `.env` and paste your API key:
+
+```bash
+CDS_API_KEY=your-api-key-here
+```
+
+The `.env` file is gitignored so your credentials stay local.
+
+### Step 3: Run setup_region.py
+
+Example for Hawaii:
+
+```bash
+cd .vibe-kit/innovation-kits/aurora/assets/scripts
+
+python3 setup_region.py \
+  --name "Hawaii" \
+  --lat-min 18.5 --lat-max 23.5 \
+  --lon-min -161 --lon-max -154
+```
+
+This will:
+- Adjust bounds to Aurora's grid requirements (dimensions divisible by 16)
+- Copy the Norway template to `<region>-example/`
+- **Update frontend automatically:**
+  - Page title: "Aurora Norway Prototype" → "Aurora {Your Region} Prototype"
+  - Page subtitle: Updates with actual grid dimensions (e.g., "64×112 grid" → your adjusted grid size)
+  - Map bounds: Creates `{region}Bounds` variable with your coordinates
+  - Map references: Updates all `bounds={norwayBounds}` references to use new bounds variable
+  - Region names: Replaces all "Norway"/"norway" text with your region name
+- Download 3 ERA5 files (surface, atmospheric, static) for June 1-7, 2025
+- Generate the frontend visualization with observations
+- Take 5-10 minutes total (downloads are ~8-10MB)
+
+The script creates `.vibe-kit/innovation-kits/aurora/assets/<region>-example/` with everything ready—**no manual App.tsx editing needed**.
+
+### Step 4: Launch Your Region
+
+```bash
+cd .vibe-kit/innovation-kits/aurora/assets/hawaii-example/frontend
+npm install
+npm run dev
+```
+
+**Keep this terminal open** (Vite dev server runs in foreground). Open http://localhost:5174 in your browser to see Hawaii observations.
+
+### Step 5 (Optional): Run Inference
+
+**Open a new terminal** (leave Vite running from Step 4) and generate 24-hour forecasts:
+
+```bash
+cd .vibe-kit/innovation-kits/aurora/assets/hawaii-example
+
+python3 scripts/run_aurora_inference.py \
+  --surf data/hawaii_surface.nc \
+  --atmos data/hawaii_atmospheric.nc \
+  --static data/hawaii_static.nc \
+  --output data/hawaii_june8_forecast.nc
+```
+
+First run downloads the 5GB Aurora checkpoint. This will take a few minutes, depending on your hardware.
+
+Then regenerate the frontend data:
+
+```bash
+python3 scripts/build_forecast_module.py \
+  data/hawaii_june8_forecast.nc \
+  --output frontend/src/data/auroraForecastPredictions.ts \
+  --region-name 'Hawaii Forecast: June 8' \
+  --max-steps 4
+```
+
+Refresh your browser (hard refresh: Ctrl+Shift+R) and the "Aurora Predictions" toggle will activate.
+
+### Common Regions
+
+**California:**
+```bash
+python3 setup_region.py --name "California" \
+  --lat-min 32 --lat-max 42 --lon-min -124 --lon-max -114
+```
+
+**Mediterranean:**
+```bash
+python3 setup_region.py --name "Mediterranean" \
+  --lat-min 30 --lat-max 46 --lon-min -6 --lon-max 37
+```
+
+**Southeast Asia:**
+```bash
+python3 setup_region.py --name "Southeast Asia" \
+  --lat-min -11 --lat-max 28 --lon-min 95 --lon-max 141
+```
+
+---
+
+## Overview (Manual Method)
+
+**Prefer manual control?** The sections below show how to customize step-by-step without the automation script.
 
 **What you'll learn:**
 - Change geographic region and grid size
@@ -102,25 +221,31 @@ print(f"Patches: {lat_cells//16}×{lon_cells//16}")
 
 ### Step 3: Update Frontend Map Bounds
 
-Edit `frontend/src/App.tsx` lines 35-40:
+Search for `norwayBounds` in `frontend/src/App.tsx` and update the region bounds:
 
 ```typescript
 // Norway demo bounds
-const MAP_BOUNDS = {
-    north: 72.75,
-    south: 57.0,
-    west: 4.0,
-    east: 31.75,
-};
+const norwayBounds: [[number, number], [number, number]] = [
+  [57, 4],
+  [72.75, 31.75],
+];
 
-// Update to match your region
-const MAP_BOUNDS = {
-  north: 48.0,
-  south: 36.0,
-  west: 0.0,
-  east: 12.0
-};
+const mapCenter: [number, number] = [64.875, 17.875];
+
+// Update to your region (example: Mediterranean)
+const mediterraneanBounds: [[number, number], [number, number]] = [
+  [36.0, 0.0],    // [south, west]
+  [48.0, 12.0],   // [north, east]
+];
+
+const mapCenter: [number, number] = [42.0, 6.0];
 ```
+
+Then search for `<MapContainer` in the file and update its props:
+- Change `bounds={norwayBounds}` to `bounds={mediterraneanBounds}`
+- Change `maxBounds={norwayBounds}` to `maxBounds={mediterraneanBounds}`
+
+**Note:** `setup_region.py` automates all of this—consider using it instead of manual editing.
 
 ### Step 4: Test Grid Divisibility
 
@@ -141,13 +266,14 @@ You will see the grid size, Aurora patch layout, and suggestions if either dimen
 
 1. **CDS Account:** Register at [cds.climate.copernicus.eu](https://cds.climate.copernicus.eu)
 2. **Accept ERA5 Terms:** Navigate to ERA5 datasets and accept the licence
-3. **Credentials:** Add your key to the environment (preferred):
+3. **Credentials:** Add your key to `.env` file (preferred):
     ```bash
-    CDS_API_KEY="YOUR_UID:YOUR_API_KEY"
-    # Optional if you mirror the API endpoint
-    # CDS_API_URL="https://cds.climate.copernicus.eu/api"
+    # In .vibe-kit/innovation-kits/aurora/assets/.env
+    CDS_API_KEY=your-api-key-here
     ```
-    Existing `~/.cdsapirc` files continue to work, but env vars avoid hidden-file issues on Windows.
+    The API key is a simple alphanumeric string (e.g., `a1b2c3d4-e5f6-7890-abcd-ef1234567890`).
+    
+    Existing `~/.cdsapirc` files continue to work, but `.env` method is recommended.
 
 ### Step 1: Install CDS API
 
