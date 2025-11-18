@@ -164,7 +164,9 @@ class LitAurora(L.LightningModule):
             T_max = total_steps // step_frequency
 
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-                optimizer, T_max=T_max, eta_min=0
+                optimizer,
+                T_max=T_max,
+                eta_min=0,
             )
             return {
                 "optimizer": optimizer,
@@ -187,7 +189,6 @@ def create_default_aurora_lightning_module(
     config = TrainingConfig(
         max_epochs=1,
         learning_rate=1e-3,
-        train_ratio=0.8,
         init_mode="pretrained",
         lr_scheduler="cosine_annealing",
         log_dir=log_dir,

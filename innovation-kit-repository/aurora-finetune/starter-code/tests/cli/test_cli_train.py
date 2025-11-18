@@ -12,8 +12,17 @@ def test_cli_train_2t_var_pretrained():
     """Test train CLI with 2t variable, pretrained model, cosine annealing scheduler."""
     # Construct paths
     train_script = PROJECT_ROOT / "src/vibe_tune_aurora/cli/train.py"
-    single_level = TESTS_DIR / "inputs/era5_single_level_western_usa_jan_1_to_7.grib"
-    pressure_level = TESTS_DIR / "inputs/era5_pressure_level_western_usa_jan_1_to_7.grib"
+    single_levels_training_file = TESTS_DIR / "inputs/era5_single_level_western_usa_jan_1_to_7.grib"
+    pressure_levels_training_file = (
+        TESTS_DIR / "inputs/era5_pressure_level_western_usa_jan_1_to_7.grib"
+    )
+    single_levels_validation_file = (
+        TESTS_DIR / "inputs/era5_single_level_western_usa_jan_8_to_14.grib"
+    )
+    pressure_levels_validation_file = (
+        TESTS_DIR / "inputs/era5_pressure_level_western_usa_jan_8_to_14.grib"
+    )
+
     log_dir = TESTS_DIR / "outputs/tb_logs_cli"
 
     # Build command
@@ -22,18 +31,20 @@ def test_cli_train_2t_var_pretrained():
         "run",
         "python",
         str(train_script),
-        "--single_level_file",
-        str(single_level),
-        "--pressure_level_file",
-        str(pressure_level),
+        "--single_levels_training_file",
+        str(single_levels_training_file),
+        "--pressure_levels_training_file",
+        str(pressure_levels_training_file),
+        "--single_levels_validation_file",
+        str(single_levels_validation_file),
+        "--pressure_levels_validation_file",
+        str(pressure_levels_validation_file),
         "--loss_type",
         "2t_var",
         "--max_epochs",
         "1",
         "--learning_rate",
         "1e-3",
-        "--train_ratio",
-        "0.8",
         "--init-mode",
         "pretrained",
         "--lr_scheduler",

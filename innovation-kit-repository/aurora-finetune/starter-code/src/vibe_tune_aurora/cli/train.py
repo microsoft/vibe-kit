@@ -12,23 +12,36 @@ from vibe_tune_aurora.training import train_era5_model
 
 def main():
     """Command-line interface for Aurora fine-tuning."""
-    parser = argparse.ArgumentParser(
-        description="Train Aurora model on ERA5 UV/cloud data"
+    parser = argparse.ArgumentParser(description="Train Aurora model on ERA5 UV/cloud data")
+
+    # Required arguments - Training data files
+    parser.add_argument(
+        "--single_levels_training_file",
+        type=Path,
+        required=True,
+        help="Path to ERA5 single-level GRIB file for training data",
+    )
+    parser.add_argument(
+        "--pressure_levels_training_file",
+        type=Path,
+        required=True,
+        help="Path to ERA5 pressure-level GRIB file for training data",
     )
 
-    # Required arguments
+    # Required arguments - Validation data files
     parser.add_argument(
-        "--single_level_file",
+        "--single_levels_validation_file",
         type=Path,
         required=True,
-        help="Path to ERA5 single-level GRIB file",
+        help="Path to ERA5 single-level GRIB file for validation data",
     )
     parser.add_argument(
-        "--pressure_level_file",
+        "--pressure_levels_validation_file",
         type=Path,
         required=True,
-        help="Path to ERA5 pressure-level GRIB file",
+        help="Path to ERA5 pressure-level GRIB file for validation data",
     )
+
     parser.add_argument(
         "--loss_type",
         type=str,
@@ -50,14 +63,8 @@ def main():
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=2e-4,
-        help="Learning rate for optimizer (default: 2e-4)",
-    )
-    parser.add_argument(
-        "--train_ratio",
-        type=float,
-        default=0.8,
-        help="Ratio of data to use for training vs validation (default: 0.8)",
+        default=1e-6,
+        help="Learning rate for optimizer (default: 1e-6)",
     )
     parser.add_argument(
         "--init-mode",
@@ -83,9 +90,9 @@ def main():
     parser.add_argument(
         "--lr_scheduler",
         type=str,
-        default=None,
+        default="cosine_annealing",
         choices=[None, "cosine_annealing"],
-        help="Learning rate scheduler: None for no scheduler, 'cosine_annealing' for cosine annealing (default: None)",
+        help="Learning rate scheduler: None for no scheduler, 'cosine_annealing' for cosine annealing (default: cosine_annealing)",
     )
     parser.add_argument(
         "--log_dir",
@@ -109,10 +116,7 @@ def main():
     args = parser.parse_args()
 
     # Validate initializer_checkpoint_path requirement
-    if (
-        args.init_mode == "initializer_checkpoint"
-        and args.initializer_checkpoint_path is None
-    ):
+    if args.init_mode == "initializer_checkpoint" and args.initializer_checkpoint_path is None:
         parser.error(
             "--initializer-checkpoint-path is required when --init-mode is 'initializer_checkpoint'"
         )
@@ -124,18 +128,24 @@ def main():
     config = TrainingConfig(
         max_epochs=args.max_epochs,
         learning_rate=args.learning_rate,
-        train_ratio=args.train_ratio,
         init_mode=args.init_mode,
         lr_scheduler=args.lr_scheduler,
         initializer_checkpoint_path=args.initializer_checkpoint_path,
         log_dir=args.log_dir,
     )
 
-    # Extract training data from GRIB files
-    print(f"Extracting training data from GRIB files...")
+    # Extract training/validation data from GRIB files
+    print(f"Extracting training/validation data from GRIB files...")
     training_data_pairs = extract_training_data_from_grib(
-        single_level_file=args.single_level_file,
-        pressure_level_file=args.pressure_level_file,
+        single_level_file=args.single_levels_training_file,
+        pressure_level_file=args.pressure_levels_training_file,
+        patch_size=args.patch_size,
+        skip_first_n_timesteps=args.skip_first_n_timesteps,
+    )
+
+    validation_data_pairs = extract_training_data_from_grib(
+        single_level_file=args.single_levels_validation_file,
+        pressure_level_file=args.pressure_levels_validation_file,
         patch_size=args.patch_size,
         skip_first_n_timesteps=args.skip_first_n_timesteps,
     )
@@ -145,8 +155,9 @@ def main():
     print(f"Target variables: {target_vars}")
     print(f"Learning rate scheduler: {args.lr_scheduler or 'None'}")
 
-    model = train_era5_model(
+    _ = train_era5_model(
         training_data_pairs=training_data_pairs,
+        validation_data_pairs=validation_data_pairs,
         target_vars=target_vars,
         config=config,
     )

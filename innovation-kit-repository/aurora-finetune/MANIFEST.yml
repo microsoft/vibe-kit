@@ -1,0 +1,79 @@
+# MANIFEST.yml v1.0
+
+kit_info:
+  name: "aurora-finetune"
+  display_name: "Aurora Finetuning Innovation Kit"
+  version: "0.1.0"
+  description: "Toolkit for finetuning Aurora foundation model on custom weather variables, recent climate data, and specialized forecasting tasks."
+  created_date: "2025-09-26"
+  last_updated: "2025-11-17"
+
+files:
+  core_files:
+    - {file: "customizations/aurora-finetune-innovation-kit.instructions.md", lines: 200, desc: "GitHub Copilot routing instructions"}
+    - {file: "docs/api-reference.md", lines: 150, desc: "Python API reference for core classes"}
+    - {file: "docs/aurora-finetuning-guide.md", lines: 450, desc: "End-to-end workflow, variants, troubleshooting"}
+    - {file: "docs/available-models.md", lines: 120, desc: "Pretrained checkpoint matrix and variable compatibility"}
+    - {file: "docs/beware.md", lines: 300, desc: "Known pitfalls and mitigation strategies"}
+    - {file: "docs/finetuning.md", lines: 550, desc: "Technical guide: gradients, AMP, normalization, model extension"}
+    - {file: "docs/form-of-a-batch.md", lines: 280, desc: "Data format specification and validation"}
+    - {file: "docs/plugin-for-ecmwf.md", lines: 180, desc: "ECMWF data integration patterns"}
+    - {file: "docs/quick-start.md", lines: 350, desc: "Finetuning tutorial on sample data"}
+    - {file: "docs/tropical-cyclone-tracking.md", lines: 250, desc: "Domain-specific finetuning for cyclone detection"}
+    - {file: "docs/usage.md", lines: 200, desc: "Installation, predictions, rollout workflows"}
+    - {file: "docs/uv-getting-started-features.md", lines: 200, desc: "uv package manager reference"}
+    - {file: "INNOVATION_KIT.md", lines: 195, desc: "Innovation Kit overview"}
+    - {file: "starter-code/README.md", lines: 180, desc: "Starter code setup and CLI reference"}
+
+technical:
+  languages: ["python", "markdown"]
+  dependencies: ["torch>=2.7.0", "lightning>=2.5.1", "numpy>=2.2.6", "xarray>=2024.1.0", "microsoft-aurora>=1.5.2", "netcdf4>=1.6.0", "cdsapi>=0.7.7"]
+  hardware:
+    minimum: {ram: "16GB", storage: "50GB", compute: "CPU"}
+    recommended: {ram: "32GB", storage: "100GB", compute: "NVIDIA A10 24GB or A100"}
+    optimal: {ram: "64GB", storage: "200GB", compute: "NVIDIA A100 40GB or better"}
+
+quality_metrics:
+  known_limitations: 
+    - "GPU strongly recommended for practical training timelines"
+    - "CDS API credentials required for downloading fresh ERA5 data"
+    - "Mixed precision (AMP) requires GPU support"
+    - "Large-scale finetuning benefits from multi-GPU or distributed training"
+
+context_management:
+  priority_files: ["INNOVATION_KIT.md", "docs/finetuning.md", "docs/available-models.md"]
+  context_tokens: {total_kit: 28000, core_files: 22000, recommended_load: 12000}
+
+workflows:
+  initialization:
+    steps:
+      - "Run: initialization/initialize_starter_code.py"
+      - "Confirm: Python 3.11+ installed"
+      - "Run: uv sync to install dependencies"
+  quick_start:
+    steps:
+      - "Review: docs/form-of-a-batch.md"
+      - "Run: starter-code tests with pytest"
+      - "Execute: uv run python -m vibe_tune_aurora.cli.train --pickle_file tests/inputs/era5_training_data_jan2025_1_to_7.pkl --loss_type 2t_var --max_epochs 1"
+      - "Evaluate: uv run python -m vibe_tune_aurora.cli.evaluate --checkpoint <path>"
+  custom_finetuning:
+    steps:
+      - "Download: Custom ERA5 data using assets/scripts/download_era5_subset.py"
+      - "Prepare: Data as aurora.Batch format (docs/form-of-a-batch.md)"
+      - "Configure: Hyperparameters in starter-code/src/vibe_tune_aurora/config.py"
+      - "Train: Use CLI with custom arguments"
+      - "Monitor: TensorBoard logs in runs/ directory"
+      - "Validate: Evaluation metrics on test set"
+
+post_install:
+  instructions_markdown: |
+    1. **Reload the VS Code window** with CTRL+SHIFT+P -> Developer: Reload Window to activate GitHub Copilot customizations.
+    2. **Run initialization** – Execute `initialization/initialize_starter_code.py` to copy the starter code and sync dependencies.
+    3. **Review the quick start** – Follow `docs/quick-start.md` with sample ERA5 data (no GPU required for demo).
+      - Optionally, run this agentically via Copilot using the `/quick-start` command while in the "Aurora Finetune" chat mode.
+        - To get to the "Aurora Finetune" chat mode, first open the command palette (CTRL+SHIFT+P), and select "Developer: Reload Window".
+        - Then, open Copilot chat (CTRL+SHIFT+I), and select the "Aurora Finetune" chat mode from the dropdown in the bottom left corner.
+    4. **Understand data format** – Study `docs/form-of-a-batch.md` to prepare your own datasets.
+    5. **Configure and train** – Use the CLI or Python API to finetune on your custom data.
+    6. **Evaluate results** – Generate evaluation metrics and compare against baseline Aurora.
+    7. **Explore next steps** – Consider domain-specific patterns (`docs/tropical-cyclone-tracking.md`) or scale to Azure ML.

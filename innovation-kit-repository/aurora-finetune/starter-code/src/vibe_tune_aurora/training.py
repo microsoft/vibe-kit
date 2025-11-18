@@ -9,7 +9,7 @@ from vibe_tune_aurora.aurora_module import LitAurora
 from vibe_tune_aurora.callbacks import SaveInitCheckpoint
 from vibe_tune_aurora.config import DEFAULT_SURF_VARS, TrainingConfig
 from vibe_tune_aurora.data_processing.data_utils import (
-    create_era5_dataloaders,
+    create_dataloader,
     load_normalization_stats,
     load_surface_stats,
 )
@@ -18,6 +18,7 @@ from vibe_tune_aurora.types import SupervisedTrainingDataPair
 
 def train_era5_model(
     training_data_pairs: list[SupervisedTrainingDataPair],
+    validation_data_pairs: list[SupervisedTrainingDataPair],
     target_vars: tuple[str, ...],
     config: TrainingConfig | None = None,
 ) -> LitAurora:
@@ -43,11 +44,8 @@ def train_era5_model(
     norm_stats = load_normalization_stats(target_vars)
 
     # Create dataloaders
-    train_loader, val_loader = create_era5_dataloaders(
-        training_data_pairs=training_data_pairs,
-        batch_size=config.batch_size,
-        train_ratio=config.train_ratio,
-    )
+    train_loader = create_dataloader(training_data_pairs)
+    val_loader = create_dataloader(validation_data_pairs)
 
     # Create Lightning module (model created internally)
     lit_model = LitAurora(

@@ -47,6 +47,7 @@ def visualize_prediction(
     output_path: Path,
     difference: bool,
     cmap: str,
+    dark_mode: bool = False,
 ) -> Path:
     """Render prediction vs. target heatmaps for a single sample."""
     dataset = ERA5Dataset(training_data_pairs)
@@ -74,10 +75,18 @@ def visualize_prediction(
 
     timestamp = target_batch.metadata.time[0]
 
+    # Apply dark mode styling
+    if dark_mode:
+        plt.style.use('dark_background')
+
     # Plot prediction, target, and absolute error
     fig, axes = plt.subplots(1, 3 if difference else 2, figsize=(16, 5), constrained_layout=True)
     if not isinstance(axes, np.ndarray):
         axes = np.array([axes])
+
+    # Compute shared min/max for prediction and target to ensure same colorbar scale
+    shared_vmin = min(pred_data.min(), target_data.min())
+    shared_vmax = max(pred_data.max(), target_data.max())
 
     titles = [
         f"Prediction ({var_name})",
@@ -86,12 +95,18 @@ def visualize_prediction(
     ]
     datasets = [pred_data, target_data, error_data if difference else None]
 
-    for ax, title, data in zip(axes, titles, datasets):
+    for i, (ax, title, data) in enumerate(zip(axes, titles, datasets)):
         if data is None:
             ax.axis("off")
             continue
 
-        pcm = ax.pcolormesh(lon_grid, lat_grid, data, shading="auto", cmap=cmap)
+        # Use shared scale for prediction and target, error has its own scale
+        if i < 2:  # Prediction and target panels
+            pcm = ax.pcolormesh(lon_grid, lat_grid, data, shading="auto", cmap=cmap,
+                               vmin=shared_vmin, vmax=shared_vmax)
+        else:  # Error panel
+            pcm = ax.pcolormesh(lon_grid, lat_grid, data, shading="auto", cmap=cmap)
+
         ax.set_title(title)
         ax.set_xlabel("Longitude")
         ax.set_ylabel("Latitude")
@@ -106,6 +121,10 @@ def visualize_prediction(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(str(output_path), dpi=200)
     plt.close(fig)
+
+    # Reset style to default
+    if dark_mode:
+        plt.style.use('default')
 
     print(f"Saved visualization to {output_path}")
     return output_path
@@ -169,6 +188,11 @@ def parse_args() -> argparse.Namespace:
         default=0,
         help="Number of initial timesteps to skip before creating training pairs (default: 0)",
     )
+    parser.add_argument(
+        "--dark_mode",
+        action="store_true",
+        help="Enable dark mode styling for the visualization",
+    )
     return parser.parse_args()
 
 
@@ -192,6 +216,7 @@ def main() -> None:
         output_path=args.output,
         difference=args.difference,
         cmap=args.cmap,
+        dark_mode=args.dark_mode,
     )
 
 

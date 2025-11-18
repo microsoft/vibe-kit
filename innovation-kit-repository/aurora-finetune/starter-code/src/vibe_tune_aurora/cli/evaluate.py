@@ -87,7 +87,7 @@ def main():
     # Run evaluation
     _ = evaluate_model(
         aurora_lightning_module=load_model(args.checkpoint),
-        training_data_pairs=training_data_pairs,
+        evaluation_data_pairs=training_data_pairs,
         target_vars=target_vars,
         output_json=args.output_json,
     )

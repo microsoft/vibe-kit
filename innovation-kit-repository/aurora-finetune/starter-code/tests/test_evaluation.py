@@ -27,7 +27,7 @@ def test_evaluation_pretrained_model_2t_var():
             log_dir=TESTS_DIR / "outputs/tb_logs",
             num_training_samples=len(training_data_pairs),
         ),
-        training_data_pairs=training_data_pairs,
+        evaluation_data_pairs=training_data_pairs,
         target_vars=("2t",),
         output_json=output_json,
     )

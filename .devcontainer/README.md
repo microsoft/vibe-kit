@@ -19,7 +19,7 @@ Innovation Kits specific to different Microsoft Research projects can be added t
     1) **CTRL+SHIFT+P** (**⌘+SHIFT+P**) → "**Dev Containers: Reopen in Container**"
     2) Wait for the container to build and start (which will take a few minutes the first time). Once the Docker image is downloaded, tools are installed, and the container is launched, the setup will automatically run the script `.devcontainer/postCreateCommand.sh` which will:
         1. Verify proper tool installation - Confirms all development tools are available
-    2. Show version information - Shows versions of key tools (Python, Node.js, uv, npm, etc.)
+        2. Show version information - Shows versions of key tools (Python, Node.js, uv, npm, etc.)
         3. Install `backend` Python packages - Installs Python dependencies via `uv`
         4. Install `frontend` Node.js modules - Installs Node.js dependencies via `npm`
         5. Install MCP servers and ensure that they are initialized - Prepares GitHub Copilot MCP servers for faster initial Copilot chat startup

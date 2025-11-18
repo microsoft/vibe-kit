@@ -24,11 +24,10 @@ TARGET_VAR_PRESETS = {
 class TrainingConfig:
     """Configuration for Aurora model training with sensible defaults."""
 
-    log_dir: Path
+    log_dir: Path | None = None
     max_epochs: int = 3
-    learning_rate: float = 2e-4
+    learning_rate: float = 1e-6
     batch_size: int = 1  # Aurora Batch objects only support batch_size=1
-    train_ratio: float = 0.8
     init_mode: str = "pretrained_and_custom"
-    lr_scheduler: str | None = None
+    lr_scheduler: str | None = "cosine_annealing"
     initializer_checkpoint_path: str | None = None

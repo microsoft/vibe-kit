@@ -21,7 +21,7 @@ Toolkit to:
 
 ## Setup instructions
 
-1. Run `.vibe-kit/innovation-kits/aurora-finetune/initialization/initialize_starter_code.py` to copy the starter assets, sync dependencies with `uv`, and (optionally) execute the bundled tests. Pass `--skip-tests` when you only need a quick refresh.
+1. Run `.vibe-kit/innovation-kits/aurora-finetune/initialization/initialize_starter_code.py` to copy the starter assets, sync dependencies with `uv`, and (optionally) execute the bundled tests. Pass `--skip-tests` by default, unless user wants to run the full test suite.
 2. Review `.vibe-kit/innovation-kits/aurora-finetune/docs/uv-getting-started-features.md` for this purpose, and confirm to the user that you've read it. Use `uv` instead of `pip` for all Python environment management. For example, to run a python file using the virtual environment (venv), use `uv run python <file.py>`. Or to add packages to the python project, use `uv add <package-name>`.
 
 ## File Index (Read These as Needed)

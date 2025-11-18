@@ -28,17 +28,14 @@ def load_model(checkpoint_path: Path) -> LitAurora:
     if not checkpoint_path.exists():
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
 
-    print(f"Loading model from checkpoint: {checkpoint_path}")
     model = LitAurora.load_from_checkpoint(checkpoint_path)
     model.eval()
-    print("Successfully loaded model from checkpoint")
-
     return model
 
 
 def evaluate_model(
     aurora_lightning_module: LitAurora,
-    training_data_pairs: list[SupervisedTrainingDataPair],
+    evaluation_data_pairs: list[SupervisedTrainingDataPair],
     target_vars: tuple[str, ...],
     output_json: Path | None = None,
 ) -> dict:
@@ -47,7 +44,7 @@ def evaluate_model(
 
     Args:
         checkpoint_path: Path to model checkpoint file
-        training_data_pairs: List of SupervisedTrainingDataPair objects for evaluation
+        evaluation_data_pairs: List of SupervisedTrainingDataPair objects for evaluation
         target_vars: Tuple of target variable names for evaluation
         output_json: Optional path to save results as JSON
 
@@ -64,9 +61,7 @@ def evaluate_model(
     Raises:
         FileNotFoundError: If checkpoint doesn't exist
     """
-    # Load dataset
-    dataset = ERA5Dataset(training_data_pairs)
-    print(f"Evaluating model on {len(dataset)} samples")
+    dataset = ERA5Dataset(evaluation_data_pairs)
 
     # Load normalization statistics
     norm_stats = load_normalization_stats(target_vars)
@@ -107,7 +102,6 @@ def evaluate_model(
         "target_vars": list(target_vars),
     }
 
-    # Print results
     print(f"\n=== Model Evaluation Results ===")
     print(f"Target variables: {target_vars}")
     print(f"Number of samples: {results['num_samples']}")
