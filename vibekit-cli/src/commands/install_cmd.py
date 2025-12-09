@@ -125,6 +125,10 @@ def run_install(kit_name: str):
                 err_console.print(f"[red]Unknown kit name: {kit_name}[/]")
                 _emit_status_and_exit([f"[red]Unknown kit name: {kit_name}[/]"], True, 3)
 
+        # If we downloaded a remote kit, process it like any other implicit source
+        if implicit_src is not None:
+            implicit_srcs.append(implicit_src)
+
         assert implicit_srcs is not None  # for type checkers
         for implicit_src in implicit_srcs:
             custom_dir = implicit_src / "customizations"

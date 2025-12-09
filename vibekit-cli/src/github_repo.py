@@ -1,8 +1,9 @@
 from __future__ import annotations
-from pathlib import Path
 import base64
 import json
 import os
+import time
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from urllib import error, request
 from urllib.parse import parse_qs, quote, urlencode
@@ -11,6 +12,9 @@ _GITHUB_API_BASE = "https://api.github.com"
 _MANIFEST_CANDIDATES = ("MANIFEST.yml", "manifest.yml", "manifest.yaml")
 _GITHUB_TOKEN_ENV_OPTIONS = ("GIT_PAT", "GITHUB_PAT", "GITHUB_TOKEN", "GH_TOKEN")
 GITHUB_SUPPORTED_HOSTS = {"github.com", "www.github.com"}
+_HTTP_TIMEOUT = 10  # seconds
+_HTTP_RETRIES = 3
+_HTTP_BACKOFF_SECONDS = 1.0
 
 
 def is_github_host(host: str) -> bool:
@@ -285,6 +289,21 @@ def _github_http_headers(accept: str) -> Dict[str, str]:
     return headers
 
 
+def _with_retries(fn):
+    last_exc = None
+    for attempt in range(_HTTP_RETRIES):
+        try:
+            return fn()
+        except error.URLError as exc:
+            last_exc = exc
+            if attempt == _HTTP_RETRIES - 1:
+                raise
+            time.sleep(_HTTP_BACKOFF_SECONDS * (attempt + 1))
+    if last_exc:
+        raise last_exc
+    raise RuntimeError("Unexpected retry loop failure")  # pragma: no cover
+
+
 def _github_http_get(url: str, params: Optional[Dict[str, str]] = None, allow_404: bool = False):
     target = url
     if params:
@@ -292,13 +311,16 @@ def _github_http_get(url: str, params: Optional[Dict[str, str]] = None, allow_40
     headers = _github_http_headers("application/vnd.github.v3+json")
     req = request.Request(target, headers=headers)
     try:
-        with request.urlopen(req) as resp:
-            raw = resp.read()
-            charset = resp.headers.get_content_charset() or "utf-8"
-            text = raw.decode(charset)
-            if not text:
-                return {}
-            return json.loads(text)
+        def _read():
+            with request.urlopen(req, timeout=_HTTP_TIMEOUT) as resp:
+                raw = resp.read()
+                charset = resp.headers.get_content_charset() or "utf-8"
+                text = raw.decode(charset)
+                if not text:
+                    return {}
+                return json.loads(text)
+
+        return _with_retries(_read)
     except error.HTTPError as exc:
         if exc.code == 404 and allow_404:
             return None
@@ -315,8 +337,11 @@ def _github_http_get_raw(url: str) -> bytes:
     headers = _github_http_headers("application/vnd.github.v3.raw")
     req = request.Request(url, headers=headers)
     try:
-        with request.urlopen(req) as resp:
-            return resp.read()
+        def _read_raw() -> bytes:
+            with request.urlopen(req, timeout=_HTTP_TIMEOUT) as resp:
+                return resp.read()
+
+        return _with_retries(_read_raw)
     except error.HTTPError as exc:
         detail = exc.read().decode("utf-8", "ignore")
         message = _format_github_http_error(exc.code, detail)
