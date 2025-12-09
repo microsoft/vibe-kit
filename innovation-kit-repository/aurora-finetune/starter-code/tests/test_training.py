@@ -30,7 +30,7 @@ def test_finetuning_2t_var_pretrained():
 
     config = TrainingConfig(
         max_epochs=1,
-        learning_rate=1e-3,
+        learning_rate=1e-6,
         init_mode="pretrained",
         lr_scheduler="cosine_annealing",
         log_dir=TESTS_DIR / "outputs/tb_logs",

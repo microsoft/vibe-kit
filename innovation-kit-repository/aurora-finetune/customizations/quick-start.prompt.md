@@ -3,4 +3,4 @@ description: Run the Aurora Finetuning Innovation Kit Quick Start Guide
 agent: "Aurora Finetune"
 ---
 
-Run through the [quick start guide](../docs/quick-start.md) for the Aurora Finetuning Innovation Kit.
+Run through the [quick start guide](.vibe-kit/innovation-kits/aurora-finetune/docs/quick-start.md) for the Aurora Finetuning Innovation Kit.

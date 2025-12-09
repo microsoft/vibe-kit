@@ -1,0 +1,14 @@
+flask==3.0.0
+flask-cors==4.0.0  
+requests==2.31.0
+python-dotenv==1.0.0
+gunicorn==20.1.0
+# Real trajectory analysis dependencies - Python 3.12 compatible versions
+numpy>=1.26.0
+scipy>=1.11.0
+mdtraj>=1.10.0
+scikit-learn>=1.3.0
+# Sequence alignment for structural superposition
+biopython>=1.80
+# AI copilot for scientific explanations
+openai>=1.0.0
