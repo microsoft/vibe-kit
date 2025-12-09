@@ -1,0 +1,91 @@
+# MANIFEST.yml v1.0
+
+kit_info:
+  name: "bioemu"
+  display_name: "BioEmu Innovation Kit"
+  version: "0.1.0"
+  description: "Protein conformational ensemble generation using AI."
+  created_date: "2025-12-02"
+  last_updated: "2025-12-06"
+
+research_foundation:
+  paper_title: "Scalable emulation of protein equilibrium ensembles with generative deep learning"
+  paper_url: "https://www.science.org/doi/10.1126/science.adv9817"
+  authors: ["Sarah Lewis", "Tim Hempel", "José Jiménez-Luna", "Frank Noé", "et al."]
+  publication_venue: "Science"
+  publication_year: 2025
+  github_repo: "https://github.com/microsoft/bioemu"
+
+prototyping:
+  time_to_first_success: "10 minutes"
+  time_to_real_application: "2 hours"
+  primary_domains: ["protein_dynamics", "structural_biology", "drug_discovery"]
+  secondary_domains: ["protein_engineering", "molecular_simulation"]
+
+files:
+  core_files:
+    - {file: "INNOVATION_KIT.md", lines: 54, desc: "Innovation Kit overview", time: "2min"}
+    - {file: "docs/quick-start.md", lines: 110, desc: "Setup tutorial for reference app", time: "10min"}
+    - {file: "docs/azure-setup.md", lines: 86, desc: "Azure AI Foundry deployment guide", time: "5min"}
+    - {file: "docs/model-details.md", lines: 201, desc: "Scientific reference: architecture, metrics, limitations", time: "15min"}
+    - {file: "docs/application-patterns.md", lines: 66, desc: "Code examples and workflows", time: "15min"}
+    - {file: "docs/data-integration.md", lines: 76, desc: "API formats and file structures", time: "10min"}
+    - {file: "docs/troubleshooting.md", lines: 80, desc: "Common issues and fixes", time: "as-needed"}
+
+assets:
+  reference_app:
+    frontend: "assets/reference-app/"
+    backend: "assets/reference-app/server/"
+    description: "Full-stack React + Flask application with 3D visualization"
+
+setup:
+  enterprise:
+    requirements: ["Azure subscription", "Azure BioEmu endpoint"]
+    setup_time: "10min"
+  individual:
+    requirements: ["Python 3.10+", "Node.js 18+", "Azure BioEmu credentials"]
+    setup_time: "10min"
+
+technical:
+  languages: ["python", "javascript", "typescript"]
+  dependencies: ["flask", "mdtraj", "numpy", "react", "molstar"]
+  hardware:
+    minimum: {ram: "8GB", storage: "2GB", compute: "CPU"}
+    recommended: {ram: "16GB", storage: "10GB", compute: "CPU"}
+
+quality_metrics:
+  validation_status: "tested"
+  last_validation_date: "2025-12-02"
+  known_limitations:
+    - "Local mode requires Linux + Python 3.10/3.11"
+    - "Local mode requires GPU for reasonable performance"
+    - "Azure mode requires endpoint credentials"
+
+integration:
+  compatible_kits: ["dayhoff"]
+  external_apis:
+    - {name: "Azure BioEmu", type: "required", purpose: "Conformational ensemble generation"}
+    - {name: "Azure OpenAI", type: "optional", purpose: "AI research assistant"}
+
+context_management:
+  priority_files: ["INNOVATION_KIT.md", "docs/quick-start.md", "docs/application-patterns.md"]
+  context_tokens: {total_kit: 3000, core_files: 2500, recommended_load: 2000}
+
+post_install:
+  instructions_markdown: |
+    ## Next Steps
+
+    1. **Reload the VS Code window** — Press `Ctrl+Shift+P` → "Developer: Reload Window" to load the BioEmu Copilot customizations.
+
+    2. **Switch chat modes** — In GitHub Copilot Chat, press `Ctrl+.` and select **BioEmu Copilot**.
+
+    3. **Let Copilot guide setup** — Ask the BioEmu Copilot: *"Help me launch the reference app"* — it will walk you through credentials and startup.
+
+    4. **Keep quick-start handy** — Reference `.vibe-kit/innovation-kits/bioemu/docs/quick-start.md` for manual steps if needed.
+
+    5. **Explore further** — Once the app runs, ask Copilot about protein sampling, ensemble analysis, or BioEmu's scientific capabilities.
+
+    ### Prerequisites
+
+    - **Azure BioEmu credentials** — Deploy an endpoint at [Azure AI Foundry - BioEmu](https://ai.azure.com/explore/models/BioEmu)
+    - **Python 3.10+** and **Node.js 18+**

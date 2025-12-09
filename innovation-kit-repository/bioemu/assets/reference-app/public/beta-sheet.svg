@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Beta-sheet protein motif -->
+  <path d="
+      M 96 128
+      L 256 256
+      L 96 384
+      M 256 128
+      L 416 256
+      L 256 384
+    " fill="none" stroke="#3B82F6" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
