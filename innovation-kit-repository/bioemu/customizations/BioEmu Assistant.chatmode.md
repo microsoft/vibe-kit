@@ -1,5 +1,5 @@
 ---
-name: "BioEmu-Asssistant"
+name: "BioEmu-Assistant"
 description: Specialist copilot for protein conformational ensemble analysis using Microsoft BioEmu—answers scientific questions and guides sampling workflows.
 tools:
   [
