@@ -3,7 +3,7 @@
 **Start here if you want to modify the working Norway example for your own region and requirements.**
 
 > **Quick reminders before you branch out:**
-> - The Norway example data installs under `.vibe-kit/innovation-kits/aurora/assets/norway-example/data/`. It contains the full 64x112 grid: `norway_surface.nc`, `norway_atmospheric.nc`, `norway_static.nc`, and `norway_june8_forecast.nc`. Point your scripts and docs at those paths so they match the kit.
+> - The Norway example data installs under `.agents/skills/aurora/assets/norway-example/data/`. It contains the full 64x112 grid: `norway_surface.nc`, `norway_atmospheric.nc`, `norway_static.nc`, and `norway_june8_forecast.nc`. Point your scripts and docs at those paths so they match the kit.
 > - If teams want a managed endpoint later, point them to the "Deploy as a web service" section for a short note on using Azure AI Foundry with the same container.
 > - For model adaptation needs, direct readers to the [Aurora Fine-tuning Innovation Kit](../../aurora-finetune/) and keep this guide focused on zero-finetune customization.
 
@@ -42,7 +42,7 @@ Aurora uses ERA5 climate data from the Copernicus Climate Data Store (CDS). You 
 In the Aurora assets directory, copy the example file:
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets
+cd .agents/skills/aurora/assets
 cp .env.example .env
 ```
 
@@ -59,7 +59,7 @@ The `.env` file is gitignored so your credentials stay local.
 Example for Hawaii:
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets/scripts
+cd .agents/skills/aurora/assets/scripts
 
 python3 setup_region.py \
   --name "Hawaii" \
@@ -80,12 +80,12 @@ This will:
 - Generate the frontend visualization with observations
 - Take 5-10 minutes total (downloads are ~8-10MB)
 
-The script creates `.vibe-kit/innovation-kits/aurora/assets/<region>-example/` with everything ready—**no manual App.tsx editing needed**.
+The script creates `.agents/skills/aurora/assets/<region>-example/` with everything ready—**no manual App.tsx editing needed**.
 
 ### Step 4: Launch Your Region
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets/hawaii-example/frontend
+cd .agents/skills/aurora/assets/hawaii-example/frontend
 npm install
 npm run dev
 ```
@@ -97,7 +97,7 @@ npm run dev
 **Open a new terminal** (leave Vite running from Step 4) and generate 24-hour forecasts:
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets/hawaii-example
+cd .agents/skills/aurora/assets/hawaii-example
 
 python3 scripts/run_aurora_inference.py \
   --surf data/hawaii_surface.nc \
@@ -252,7 +252,7 @@ Then search for `<MapContainer` in the file and update its props:
 Run the bundled validator before fetching data:
 
 ```bash
-python .vibe-kit/innovation-kits/aurora/assets/scripts/validate_grid.py \
+python .agents/skills/aurora/assets/scripts/validate_grid.py \
   --lat-min 36.0 --lat-max 48.0 --lon-min 0.0 --lon-max 12.0
 ```
 
@@ -268,7 +268,7 @@ You will see the grid size, Aurora patch layout, and suggestions if either dimen
 2. **Accept ERA5 Terms:** Navigate to ERA5 datasets and accept the licence
 3. **Credentials:** Add your key to `.env` file (preferred):
     ```bash
-    # In .vibe-kit/innovation-kits/aurora/assets/.env
+    # In .agents/skills/aurora/assets/.env
     CDS_API_KEY=your-api-key-here
     ```
     The API key is a simple alphanumeric string (e.g., `a1b2c3d4-e5f6-7890-abcd-ef1234567890`).
@@ -1216,6 +1216,6 @@ def frost_warning_system(region_bounds):
 
 ---
 
-**Part of:** [Aurora Innovation Kit](.vibe-kit/innovation-kits/aurora/INNOVATION_KIT.md)  
-**Reference code:** [assets/norway-example/](.vibe-kit/innovation-kits/aurora/assets/norway-example/)  
+**Part of:** [Aurora Innovation Kit](.agents/skills/aurora/SKILL.md)  
+**Reference code:** [assets/norway-example/](.agents/skills/aurora/assets/norway-example/)  
 **Previous:** [norway-technical-guide.md](norway-technical-guide.md)

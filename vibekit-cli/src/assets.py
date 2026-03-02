@@ -1,12 +1,45 @@
 from __future__ import annotations
-from pathlib import Path
-from typing import List, Dict, Any
+
 import json
+import shutil
 from datetime import datetime, timezone
-from manifests import ASSET_SUFFIX_GROUPS
+from pathlib import Path
+from typing import Any, Dict, List
+
 import typer
 
+from manifests import ASSET_SUFFIX_GROUPS
+
 CUSTOM_INDEX_FILENAME = "customizations-index.json"
+SKILL_FILE_NAME = "SKILL.md"
+
+
+def sync_kit_skill_assets(project_root: Path, installed_kit_dir: Path, kit_name: str) -> List[str]:
+    skill_file_path = installed_kit_dir / SKILL_FILE_NAME
+    if not skill_file_path.is_file():
+        return []
+
+    destination_root = project_root / ".agents" / "skills"
+    destination_root.mkdir(parents=True, exist_ok=True)
+    destination_dir = destination_root / kit_name
+
+    if destination_dir.exists():
+        shutil.rmtree(destination_dir)
+
+    shutil.copytree(installed_kit_dir, destination_dir)
+
+    return [
+        (destination_dir / SKILL_FILE_NAME).relative_to(project_root).as_posix(),
+    ]
+
+
+def remove_kit_skill_assets(project_root: Path, kit_name: str) -> List[str]:
+    destination_dir = project_root / ".agents" / "skills" / kit_name
+    if not destination_dir.exists():
+        return []
+
+    shutil.rmtree(destination_dir)
+    return [destination_dir.relative_to(project_root).as_posix()]
 
 
 def _index_path(state_dir: Path) -> Path:
@@ -47,9 +80,26 @@ def _write_index(state_dir: Path, data: Dict[str, Any]) -> None:
     tmp.replace(p)
 
 
-def remove_kit_from_custom_index(state_dir: Path, kit_name: str) -> None:
-    """Remove a kit's entry from the global customizations index (if present).
-    Returns list of bundle paths removed."""
+def list_custom_assets_for_kit(state_dir: Path, kit_name: str) -> List[str]:
+    """Return bundle paths recorded for a kit in the customization index."""
+    data = _load_index(state_dir)
+    kits = data.get("kits", {})
+    entry = kits.get(kit_name)
+    bundles: List[str] = []
+    if isinstance(entry, dict):
+        for cat_payload in entry.values():
+            if not isinstance(cat_payload, dict):
+                continue
+            for info in cat_payload.values():
+                if isinstance(info, dict):
+                    bundle = info.get("bundle")
+                    if isinstance(bundle, str):
+                        bundles.append(bundle)
+    return sorted(set(bundles))
+
+
+def remove_kit_from_custom_index(state_dir: Path, kit_name: str) -> List[str]:
+    """Remove a kit's entry from the global customizations index (if present)."""
     data = _load_index(state_dir)
     kits = data.get("kits", {})
     removed = []
@@ -70,7 +120,8 @@ def detect_customization_conflicts(
     """Return list of human-readable conflict messages if any customization file basenames
     are already claimed by another kit.
 
-    Conflict rule (simple): a basename (e.g., 'aurora.prompt.md') may appear in only one kit across all
+    Conflict rule (simple): a basename (e.g., 'aurora.prompt.md') may appear
+    in only one kit across all
     recorded sources for that category. Paths are ignored; we only look at the filename.
     This keeps logic minimal and matches requested behavior.
     """
@@ -103,7 +154,8 @@ def detect_customization_conflicts(
         owners = existing.get(base)
         if owners:
             conflicts.append(
-                f"Customization file name conflict: '{base}' already provided by kit(s): {', '.join(sorted(owners))}"
+                "Customization file name conflict: "
+                f"'{base}' already provided by kit(s): {', '.join(sorted(owners))}"
             )
     return conflicts
 
@@ -167,13 +219,15 @@ def copy_kit_content_assets(src_dir: Path, state_dir: Path, kit_name: str) -> Li
 
         if conflict_owner:
             typer.echo(
-                f"Skipping customization '{name}' in '{category}'; already provided by kit '{conflict_owner}'."
+                "Skipping customization "
+                f"'{name}' in '{category}'; already provided by kit '{conflict_owner}'."
             )
             continue
 
         if dest_file.exists():
             typer.echo(
-                f"Skipping customization '{name}' in '{category}'; file already exists in state directory."
+                "Skipping customization "
+                f"'{name}' in '{category}'; file already exists in state directory."
             )
             continue
 

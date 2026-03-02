@@ -8,13 +8,14 @@ from pathlib import Path
 import matplotlib.pyplot as plt  # type: ignore[import]
 import numpy as np  # type: ignore[import]
 import torch  # type: ignore[import]
-
+from typing import Literal
 from vibe_tune_aurora.data_processing.data_utils import ERA5Dataset
-from vibe_tune_aurora.data_processing.extract_data_from_grib import (
+from vibe_tune_aurora.evaluation import PersistenceModel
+from vibe_tune_aurora.data_processing.grib_data_processing import (
     extract_training_data_from_grib,
 )
-from vibe_tune_aurora.evaluation import load_model
-from vibe_tune_aurora.types import SupervisedTrainingDataPair
+from vibe_tune_aurora.evaluation import load_aurora_lightning_module
+from vibe_tune_aurora.custom_types import SupervisedTrainingDataPair
 
 
 def _extract_surface_field(batch, var_name: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -40,7 +41,8 @@ def _extract_surface_field(batch, var_name: str) -> tuple[np.ndarray, np.ndarray
 
 
 def visualize_prediction(
-    checkpoint_path: Path,
+    model_kind: Literal["persistence", "checkpoint"],
+    checkpoint_path: Path | None,
     training_data_pairs: list[SupervisedTrainingDataPair],
     var_name: str,
     sample_index: int,
@@ -49,7 +51,27 @@ def visualize_prediction(
     cmap: str,
     dark_mode: bool = False,
 ) -> Path:
-    """Render prediction vs. target heatmaps for a single sample."""
+    """
+    Render prediction vs. target heatmaps for a single sample.
+    Supports a model from checkpoint, or a persistence model. If choosing persistence model,
+    set `model_kind` to "persistence" and `checkpoint` to None.
+    """
+    # Assign model, depending on user's selection
+    if model_kind == "persistence":
+        if checkpoint_path is not None:
+            raise ValueError(
+                f"Since `model_kind` is set to 'persistence', a model checkpoint is "
+                f"not needed and thus should be set to None. However, `checkpoint_path` is "
+                f"set to: {checkpoint_path}"
+            )
+        model = PersistenceModel()
+    else:
+        if checkpoint_path is None:
+            raise ValueError("Checkpoint path must be specified.")
+        lightning_module = load_aurora_lightning_module(checkpoint_path)
+        lightning_module.eval()
+        model = lightning_module.model
+
     dataset = ERA5Dataset(training_data_pairs)
 
     if sample_index < 0 or sample_index >= len(dataset):
@@ -59,11 +81,8 @@ def visualize_prediction(
 
     input_batch, target_batch = dataset[sample_index]
 
-    model = load_model(checkpoint_path)
-    model.eval()
-
     with torch.inference_mode():
-        prediction_batch = model.model.forward(input_batch)
+        prediction_batch = model.forward(input_batch)
 
     # Extract arrays
     pred_data, lat, lon = _extract_surface_field(prediction_batch, var_name)
@@ -77,7 +96,7 @@ def visualize_prediction(
 
     # Apply dark mode styling
     if dark_mode:
-        plt.style.use('dark_background')
+        plt.style.use("dark_background")
 
     # Plot prediction, target, and absolute error
     fig, axes = plt.subplots(1, 3 if difference else 2, figsize=(16, 5), constrained_layout=True)
@@ -102,8 +121,15 @@ def visualize_prediction(
 
         # Use shared scale for prediction and target, error has its own scale
         if i < 2:  # Prediction and target panels
-            pcm = ax.pcolormesh(lon_grid, lat_grid, data, shading="auto", cmap=cmap,
-                               vmin=shared_vmin, vmax=shared_vmax)
+            pcm = ax.pcolormesh(
+                lon_grid,
+                lat_grid,
+                data,
+                shading="auto",
+                cmap=cmap,
+                vmin=shared_vmin,
+                vmax=shared_vmax,
+            )
         else:  # Error panel
             pcm = ax.pcolormesh(lon_grid, lat_grid, data, shading="auto", cmap=cmap)
 
@@ -114,7 +140,8 @@ def visualize_prediction(
         plt.colorbar(pcm, ax=ax, orientation="vertical", label=var_name)
 
     fig.suptitle(
-        f"Aurora finetune quick-look | Sample {sample_index} | {timestamp.isoformat()} | {var_name}",
+        f"Aurora finetune quick-look | Sample {sample_index} | {timestamp.isoformat()} "
+        f"| {var_name}",
         fontsize=14,
     )
 
@@ -124,7 +151,7 @@ def visualize_prediction(
 
     # Reset style to default
     if dark_mode:
-        plt.style.use('default')
+        plt.style.use("default")
 
     print(f"Saved visualization to {output_path}")
     return output_path
@@ -134,7 +161,20 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Render prediction vs. target heatmaps for a finetuned Aurora checkpoint",
     )
-    parser.add_argument("--checkpoint", type=Path, required=True, help="Path to .ckpt file")
+    parser.add_argument(
+        "--model_kind",
+        type=str,
+        choices=["persistence", "checkpoint"],
+        required=True,
+        help="Whether model should be a persistence model, or a model loaded from checkpoint.",
+    )
+    parser.add_argument(
+        "--checkpoint",
+        type=Path,
+        default=None,
+        required=False,
+        help="Path to .ckpt file. No need to specify this if model_kind=persistence.",
+    )
     parser.add_argument(
         "--single_level_file",
         type=Path,
@@ -180,7 +220,8 @@ def parse_args() -> argparse.Namespace:
         "--patch_size",
         type=int,
         default=4,
-        help="Patch size for Aurora model - spatial dimensions will be cropped to multiples (default: 4)",
+        help="Patch size for Aurora model - spatial dimensions will be cropped to "
+        "multiples (default: 4)",
     )
     parser.add_argument(
         "--skip_first_n_timesteps",
@@ -193,6 +234,13 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Enable dark mode styling for the visualization",
     )
+    parser.add_argument(
+        "--data_additional_surf_vars",
+        type=lambda x: x.split(","),
+        default=[],
+        help="List (input as comma-separated list of variable names, with no spaces between "
+        "commas) of additional surface variables (beyond defaults) to extract from raw data",
+    )
     return parser.parse_args()
 
 
@@ -200,15 +248,17 @@ def main() -> None:
     args = parse_args()
 
     # Extract training data from GRIB files
-    print(f"Extracting training data from GRIB files...")
+    print("Extracting training data from GRIB files...")
     training_data_pairs = extract_training_data_from_grib(
         single_level_file=args.single_level_file,
         pressure_level_file=args.pressure_level_file,
         patch_size=args.patch_size,
         skip_first_n_timesteps=args.skip_first_n_timesteps,
+        additional_surface_variables=tuple(args.data_additional_surf_vars),
     )
 
     visualize_prediction(
+        model_kind=args.model_kind,
         checkpoint_path=args.checkpoint,
         training_data_pairs=training_data_pairs,
         var_name=args.var,

@@ -11,7 +11,7 @@ This guide walks you through a minimal finetuning workflow using bundled ERA5 da
 - **Vibe Kit installed** with Aurora Finetune Innovation Kit  
 - **Dev container running** (recommended) or local Python 3.12+  
 - **GPU recommended** (but CPU also works)  
-- **"Aurora Finetune" chat mode active** (switch in Copilot Chat if needed)
+- **"Aurora Finetune" agent active** (switch in Copilot Chat if needed)
 
 ---
 
@@ -20,7 +20,7 @@ This guide walks you through a minimal finetuning workflow using bundled ERA5 da
 The Aurora Finetune Kit includes a Python package (`vibe-tune-aurora`) with training scripts, test data, and CLI tools. Initialize it first:
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora-finetune
+cd .agents/skills/aurora-finetune
 uv run python3 initialization/initialize_starter_code.py --skip-tests
 ```
 
@@ -361,7 +361,7 @@ A: Yes, pass `--resume_from_checkpoint tb_logs/finetuning/version_0/checkpoints/
 **"Visualization script fails"**  
 → Check matplotlib is installed: `uv add matplotlib` (should be in dev dependencies)
 
-**Still stuck?** Ask in "Aurora Finetune" chat mode: *"Finetuning failed with error: [paste error message]"*
+**Still stuck?** Ask in "Aurora Finetune" agent: *"Finetuning failed with error: [paste error message]"*
 
 ---
 
@@ -388,5 +388,5 @@ A: Yes, pass `--resume_from_checkpoint tb_logs/finetuning/version_0/checkpoints/
 
 ---
 
-**Part of:** [Aurora Finetune Innovation Kit](../INNOVATION_KIT.md)  
+**Part of:** [Aurora Finetune Innovation Kit](../SKILL.md)  
 **Reference implementation:** [starter-code/](../starter-code/)

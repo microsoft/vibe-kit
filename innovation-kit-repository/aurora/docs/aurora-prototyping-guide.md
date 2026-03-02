@@ -3,7 +3,7 @@
 **Start here if you want to understand Aurora fundamentals and build your own application from the ground up.**
 
 > **Kit alignment checklist:**
-> - Sample data installs under `.vibe-kit/innovation-kits/aurora/assets/norway-example/data/` (mirrored from `innovation-kit-repository/aurora/assets/norway-example/data/`) and covers the 64x112 grid. Update file paths before sharing snippets or scripts.
+> - Sample data installs under `.agents/skills/aurora/assets/norway-example/data/` (mirrored from `innovation-kit-repository/aurora/assets/norway-example/data/`) and covers the 64x112 grid. Update file paths before sharing snippets or scripts.
 > - If someone needs a hosted endpoint, the "Deployments" section includes a short note on reusing these scripts with Azure AI Foundry.
 > - For fine-tuning or custom model variants, route them to the [Aurora Fine-tuning Innovation Kit](../../aurora-finetune/) rather than extending this quick-start.
 > **Which guide should I use?**
@@ -81,7 +81,7 @@ Before building a prototype, you need **Aurora-compatible data**. Use these offi
 3. **Validation: Inspect Your Downloaded Data**  
    ```bash
     # After downloading, check compatibility
-    python .vibe-kit/innovation-kits/aurora/assets/scripts/check_aurora_dataset.py --data-dir ./your_data_folder
+    python .agents/skills/aurora/assets/scripts/check_aurora_dataset.py --data-dir ./your_data_folder
    ```
    This will show:
    - Available variables (u10, v10, t2m, msl, etc.)
@@ -154,7 +154,7 @@ level / pressure_level → Atmospheric pressure levels (hPa) if using atmospheri
 
 ```bash
 # Use the inspection script bundled with the kit
-python .vibe-kit/innovation-kits/aurora/assets/scripts/check_aurora_dataset.py --data-dir ./your_data_folder
+python .agents/skills/aurora/assets/scripts/check_aurora_dataset.py --data-dir ./your_data_folder
 ```
 
 If you are browsing the repository source directly, the same helper lives at `innovation-kit-repository/aurora/assets/scripts/check_aurora_dataset.py`.
@@ -451,7 +451,7 @@ For production deployment patterns, see:
 
 ### Issue: Data variables not found
 **Solution**:
-- Run `python .vibe-kit/innovation-kits/aurora/assets/scripts/check_aurora_dataset.py` to check variable names
+- Run `python .agents/skills/aurora/assets/scripts/check_aurora_dataset.py` to check variable names
 - Verify your data has required variables (u10, v10, t2m, msl)
 - Use dummy tensors if variables are missing
 

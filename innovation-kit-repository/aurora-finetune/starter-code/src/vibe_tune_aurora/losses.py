@@ -1,5 +1,6 @@
 """Loss functions for Aurora model training and evaluation."""
 
+from aurora import Batch
 import torch
 
 from vibe_tune_aurora.data_processing.data_utils import normalize_tensor
@@ -10,7 +11,6 @@ def compute_mae_loss(
     target_batch,
     target_vars: tuple[str, ...],
     norm_stats: dict[str, tuple[float, float]],
-    device: str | torch.device,
 ) -> tuple[torch.Tensor, int]:
     """
     Compute Mean Absolute Error (MAE) loss over target variables with normalization.
@@ -50,6 +50,7 @@ def compute_mae_loss(
         ...                                         norm_stats, model.device)
         >>> loss = loss_tensor.item()
     """
+    device = get_device_from_batch(prediction_batch)
     total_loss = torch.tensor(0.0, device=device)
     n_vars = 0
 
@@ -68,8 +69,31 @@ def compute_mae_loss(
             total_loss += loss
             n_vars += 1
 
+    # Validate that we found target variables
+    if n_vars == 0:
+        available_vars = set(prediction_batch.surf_vars.keys()) & set(target_batch.surf_vars.keys())
+        raise ValueError(
+            f"None of the target variables {target_vars} were found in batch surf_vars. "
+            f"Available variables: {list(sorted(available_vars))}. "
+            f"Ensure target variables are included via --data_additional_surf_vars when "
+            f"extracting data."
+        )
+
     # Average loss across target variables
-    if n_vars > 0:
-        total_loss = total_loss / n_vars
+    total_loss = total_loss / n_vars
 
     return total_loss, n_vars
+
+
+def get_device_from_batch(batch: Batch) -> torch.device:
+    """
+    Gets the torch device of the tensors in the Aurora Batch object.
+    Assumes all tensors in the batch use the same device.
+    """
+    surface_vars = batch.surf_vars
+    surf_var_names = list(surface_vars.keys())
+    first_surf_tensor = surface_vars[surf_var_names[0]]
+    assert isinstance(first_surf_tensor, torch.Tensor)
+
+    device = first_surf_tensor.device
+    return device

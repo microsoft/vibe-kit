@@ -1,12 +1,15 @@
 import os
 import shutil
 import subprocess
+import warnings
 import pytest
 from pathlib import Path
 
 CLI_EXECUTABLE = shutil.which("vibekit") or "vibekit"
 
+_TOKEN_ENV_NAMES = ("GIT_PAT", "GITHUB_PAT", "GITHUB_TOKEN", "GH_TOKEN")
 DUMMY_GIT_PAT = "dummy-pat-for-tests"
+_DUMMY_WARNING_SHOWN = False
 
 
 def _prepare_local_template_repo(base: Path) -> Path:
@@ -27,17 +30,33 @@ def _prepare_local_template_repo(base: Path) -> Path:
     return repo_dir
 
 
+def _inject_dummy_token(environment: dict[str, str]) -> None:
+    global _DUMMY_WARNING_SHOWN
+    has_token = any((environment.get(name) or "").strip() for name in _TOKEN_ENV_NAMES)
+    if has_token:
+        return
+    if not _DUMMY_WARNING_SHOWN:
+        warnings.warn(
+            "No GitHub token env vars set; using dummy token for CLI subprocesses "
+            f"({', '.join(_TOKEN_ENV_NAMES)}).",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        _DUMMY_WARNING_SHOWN = True
+    environment["GIT_PAT"] = DUMMY_GIT_PAT
+
+
 @pytest.fixture
 def run_cli(tmp_path: Path):
     template_repo = _prepare_local_template_repo(tmp_path)
 
     def _run(cwd: Path, *args: str, env: dict | None = None, check: bool = False):
         e = os.environ.copy()
-        e.setdefault("GIT_PAT", DUMMY_GIT_PAT)
-        # Point clone URL to local test template to avoid network/PAT usage
-        e.setdefault("VIBEKIT_INIT_REPO_URL", str(template_repo))
         if env:
             e.update(env)
+        _inject_dummy_token(e)
+        # Point clone URL to local test template to avoid network/PAT usage
+        e.setdefault("VIBEKIT_INIT_REPO_URL", str(template_repo))
         result = subprocess.run([CLI_EXECUTABLE, *args], cwd=cwd, capture_output=True, text=True, env=e)
         if check and result.returncode != 0:
             raise AssertionError(

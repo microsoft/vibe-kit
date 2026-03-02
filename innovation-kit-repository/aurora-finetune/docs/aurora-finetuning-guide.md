@@ -4,7 +4,7 @@
 
 This document explains how to adapt the Aurora weather foundation model for new variables, datasets, or lead times. It complements the starter code supplied with the kit and preserves the original technical guidance from the Aurora authors while improving navigation and formatting.
 
-> **Path note:** When the kit is installed via `vibekit`, assets live under `.vibe-kit/innovation-kits/aurora-finetune/`. Inside this repository, the same files are under `innovation-kit-repository/aurora-finetune/`. Swap the prefix as needed for your environment.
+> **Path note:** When the kit is installed via `vibekit`, assets live under `.agents/skills/aurora-finetune/`. Inside this repository, the same files are under `innovation-kit-repository/aurora-finetune/`. Swap the prefix as needed for your environment.
 
 ## Quick links
 

@@ -1,6 +1,6 @@
 # UV Getting Started & Feature Overview
 
-`uv` is the package manager used throughout the Aurora Finetuning Innovation Kit. This guide preserves the upstream feature list while organizing it for quick reference so you can move between the initialization script (`../initialization/initialize_starter_code.py`, surfaced at `.vibe-kit/innovation-kits/aurora-finetune/initialization/initialize_starter_code.py` after install) and day-to-day workflows.
+`uv` is the package manager used throughout the Aurora Finetuning Innovation Kit. This guide preserves the upstream feature list while organizing it for quick reference so you can move between the initialization script (`../initialization/initialize_starter_code.py`, surfaced at `.agents/skills/aurora-finetune/initialization/initialize_starter_code.py` after install) and day-to-day workflows.
 
 ## Core concepts
 

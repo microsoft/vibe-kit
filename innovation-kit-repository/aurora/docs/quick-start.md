@@ -22,7 +22,7 @@ This guide walks you through the 64×112 Norway demo. First you'll explore June 
 Start by viewing the bundled ERA5 observations (June 1–7, 2025):
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets/norway-example/frontend
+cd .agents/skills/aurora/assets/norway-example/frontend
 npm install
 npm run dev
 ```
@@ -61,7 +61,7 @@ or simply continue to Step 3 below.
 Before running inference, install the required packages:
 
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets/norway-example
+cd .agents/skills/aurora/assets/norway-example
 pip install -r scripts/requirements.txt
 ```
 
@@ -276,5 +276,5 @@ A: Download actual June 8 observations from CDS and compare against `norway_june
 
 ---
 
-**Part of:** [Aurora Innovation Kit](../INNOVATION_KIT.md)  
+**Part of:** [Aurora Innovation Kit](../SKILL.md)  
 **Reference implementation:** [assets/norway-example/](../assets/norway-example/)

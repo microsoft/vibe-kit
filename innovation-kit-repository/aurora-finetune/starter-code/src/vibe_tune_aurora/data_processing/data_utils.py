@@ -6,8 +6,8 @@ from pathlib import Path
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from vibe_tune_aurora.config import DEFAULT_STATS_FILE
-from vibe_tune_aurora.types import SupervisedTrainingDataPair
+from vibe_tune_aurora.defaults.default_configs import DEFAULT_STATS_FILE
+from vibe_tune_aurora.custom_types import SupervisedTrainingDataPair
 
 
 class ERA5Dataset(Dataset):

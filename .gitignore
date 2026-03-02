@@ -264,12 +264,19 @@ coverage/
 # MCP server local state
 .mcp-memory.json
 
+.github/skills/
+.github/agents/
+.github/prompts/
+.github/instructions/
+
 .vibe-kit/innovation-kits/
-.vibe-kit/chatmodes/
+.vibe-kit/agents/
 .vibe-kit/instructions/
 .vibe-kit/prompts/
 .vibe-kit/customizations-index.json
 .vibe-kit/innovation-kits.json
+
+.agents/skills/
 
 # user-installed starter code from innovation kits
 /aurora-finetune

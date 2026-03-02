@@ -33,7 +33,7 @@ files:
     - {file: "docs/application-patterns.md", lines: 301, desc: "Domain-specific workflow templates", time: "1hr"}
     - {file: "docs/troubleshooting.md", lines: 278, desc: "Troubleshooting common issues", time: "as-needed"}
     - {file: "docs/performance-guide.md", lines: 55, desc: "Hardware and optimization strategies", time: "15min"}
-    - {file: "customizations/Aurora Forecast.chatmode.md", lines: 370, desc: "AI assistant chat mode configuration", time: "5min"}
+    - {file: "customizations/Aurora Forecast.agent.md", lines: 370, desc: "AI assistant chat mode configuration", time: "5min"}
     - {file: "customizations/aurora-innovation-kit.instructions.md", lines: 188, desc: "GitHub Copilot routing instructions", time: "5min"}
 
 data_samples:

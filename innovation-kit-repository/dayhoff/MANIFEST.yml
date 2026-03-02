@@ -32,7 +32,7 @@ files:
     - {file: "docs/alignment-constitution.md", lines: 85, desc: "Biosecurity guardrails & screening checklist", time: "5min"}
     - {file: "docs/troubleshooting.md", lines: 26, desc: "Common issues and fixes", time: "as-needed"}
     - {file: "docs/performance-guide.md", lines: 64, desc: "GPU sizing and optimization", time: "30min"}
-    - {file: "customizations/Dayhoff Protein Design.chatmode.md", lines: 200, desc: "AI assistant chat mode", time: "5min"}
+    - {file: "customizations/Dayhoff Protein Design.agent.md", lines: 200, desc: "AI assistant chat mode", time: "5min"}
     - {file: "customizations/dayhoff-innovation-kit.instructions.md", lines: 150, desc: "GitHub Copilot routing instructions", time: "5min"}
   advanced_files: []
   enterprise: {requirements: ["Azure AI Foundry endpoint", "Azure Storage"], setup_time: "5min"}

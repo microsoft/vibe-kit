@@ -52,9 +52,16 @@ def list_command(
 
 
 @app.command(no_args_is_help=True)
-def install(kit_name: str = typer.Argument(..., help="Name of kit to install")):
+def install(
+    kit_name: str = typer.Argument(..., help="Name of kit to install"),
+    skip_base_skills: bool = typer.Option(
+        False,
+        "--skip-base-skills",
+        help="Install only the requested kit and skip automatic shared base-skill installation",
+    ),
+):
     """Install an innovation kit by name."""
-    run_install(kit_name)
+    run_install(kit_name, skip_base_skills=skip_base_skills)
 
 
 @app.command(no_args_is_help=True)
@@ -63,17 +70,29 @@ def update(
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show installed vs available version without modifying anything"
     ),
+    yes: bool = typer.Option(
+        False,
+        "-y",
+        "--yes",
+        help="Skip confirmation prompt when applying an update",
+    ),
 ):
     """Update an installed innovation kit by name."""
-    run_update(kit_name, dry_run)
+    run_update(kit_name, dry_run, assume_yes=yes)
 
 
 @app.command(no_args_is_help=True)
 def uninstall(
     kit_name: str = typer.Argument(..., help="Name of kit to uninstall", metavar="kit-name"),
+    yes: bool = typer.Option(
+        False,
+        "-y",
+        "--yes",
+        help="Skip confirmation prompt and uninstall immediately",
+    ),
 ):
     """Uninstall an installed innovation kit by name."""
-    run_uninstall(kit_name)
+    run_uninstall(kit_name, assume_yes=yes)
 
 
 def main():  # pragma: no cover

@@ -21,7 +21,7 @@ This guide shows real-world Aurora applications across different domains. Each p
 
 **Scenario**: 24-hour forecasts for mainland Norway at 0.25° resolution (64×112 grid).
 
-**Reference implementation:** [assets/norway-example/](.vibe-kit/innovation-kits/aurora/assets/norway-example/)
+**Reference implementation:** [assets/norway-example/](.agents/skills/aurora/assets/norway-example/)
 
 **Key characteristics:**
 - Expanded mainland grid (64×112 = 7,168 points; 4×7 Aurora patches)
@@ -76,7 +76,7 @@ save_forecast(predictions, "data/norway_june8_forecast.nc")
 
 # 1. Configure CDS credentials (one-time setup)
 ```bash
-cd .vibe-kit/innovation-kits/aurora/assets
+cd .agents/skills/aurora/assets
 cp .env.example .env
 # Edit .env and add: CDS_API_KEY=your-api-key-here
 ```
@@ -90,7 +90,7 @@ python3 setup_region.py \
     --lat-min 32 --lat-max 42 \
     --lon-min -124 --lon-max -114
 
-# Creates: .vibe-kit/innovation-kits/aurora/assets/california-example/
+# Creates: .agents/skills/aurora/assets/california-example/
 # Downloads: 3 ERA5 files (surface, atmospheric, static)
 # Generates: Frontend with California bounds and June 1-7 observations
 ```
@@ -99,7 +99,7 @@ python3 setup_region.py \
 
 ```bash
 # 1. Fetch ERA5 tiles for the new region (example: Bay of Biscay, 48x80 grid)
-cd .vibe-kit/innovation-kits/aurora/assets/scripts
+cd .agents/skills/aurora/assets/scripts
 python download_era5_subset.py \
     --dataset reanalysis-era5-single-levels \
     --area 50 -10 40 0 \
@@ -139,7 +139,7 @@ STATIC_FILE = Path("data/biscay_static.nc")
 
 ```bash
 # 3. Run Aurora inference for the new region
-cd .vibe-kit/innovation-kits/aurora/assets/norway-example
+cd .agents/skills/aurora/assets/norway-example
 python scripts/run_aurora_inference.py \
     --surf data/biscay_surface.nc \
     --atmos data/biscay_atmospheric.nc \
@@ -161,8 +161,8 @@ python scripts/run_aurora_inference.py \
 import numpy as np
 import xarray as xr
 
-surface_ds = xr.open_dataset(".vibe-kit/innovation-kits/aurora/assets/norway-example/data/norway_surface.nc")
-forecast_ds = xr.open_dataset(".vibe-kit/innovation-kits/aurora/assets/norway-example/data/norway_june8_forecast.nc")
+surface_ds = xr.open_dataset(".agents/skills/aurora/assets/norway-example/data/norway_surface.nc")
+forecast_ds = xr.open_dataset(".agents/skills/aurora/assets/norway-example/data/norway_june8_forecast.nc")
 
 # Align to the same timestamps (forecast starts 2025-06-08 00:00 UTC)
 truth = surface_ds.sel(time="2025-06-08T00:00")

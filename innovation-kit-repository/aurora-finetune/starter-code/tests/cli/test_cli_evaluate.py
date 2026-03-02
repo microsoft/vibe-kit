@@ -29,6 +29,8 @@ def test_cli_evaluate_pretrained_model_2t_var():
         "run",
         "python",
         str(evaluate_script),
+        "--model_kind",
+        "checkpoint",
         "--checkpoint",
         str(desired_checkpoint_path),
         "--single_level_file",
@@ -42,7 +44,7 @@ def test_cli_evaluate_pretrained_model_2t_var():
     ]
 
     # Run the CLI script
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd)
 
     # Check that the command succeeded
     assert result.returncode == 0, f"CLI command failed with error:\n{result.stderr}"
@@ -53,7 +55,8 @@ def test_cli_evaluate_pretrained_model_2t_var():
 
 def create_and_save_pretrained_aurora_checkpoint(checkpoint_path: Path) -> None:
     """
-    Creates a basic pretrained aurora lightning module, and saves the model training checkpoint to a given path
+    Creates a basic pretrained aurora lightning module, and saves the model training checkpoint to
+    a given path
     """
     aurora_lightning_module: LitAurora = create_default_aurora_lightning_module(
         log_dir=TESTS_DIR / "outputs/tb_logs",
@@ -68,3 +71,39 @@ def create_and_save_pretrained_aurora_checkpoint(checkpoint_path: Path) -> None:
     )
     trainer.fit(aurora_lightning_module)
     trainer.save_checkpoint(checkpoint_path)
+
+
+def test_cli_evaluate_persistence_model_2t_var():
+    """Test evaluate CLI with 2t variable using persistence model."""
+    # Construct paths
+    evaluate_script = PROJECT_ROOT / "src/vibe_tune_aurora/cli/evaluate.py"
+    single_level = TESTS_DIR / "inputs/era5_single_level_western_usa_jan_1_to_7.grib"
+    pressure_level = TESTS_DIR / "inputs/era5_pressure_level_western_usa_jan_1_to_7.grib"
+    output_json = TESTS_DIR / "outputs/evaluation_results_persistence_cli_test.json"
+
+    # Build command
+    cmd = [
+        "uv",
+        "run",
+        "python",
+        str(evaluate_script),
+        "--model_kind",
+        "persistence",
+        "--single_level_file",
+        str(single_level),
+        "--pressure_level_file",
+        str(pressure_level),
+        "--loss_type",
+        "2t_var",
+        "--output_json",
+        str(output_json),
+    ]
+
+    # Run the CLI script
+    result = subprocess.run(cmd)
+
+    # Check that the command succeeded
+    assert result.returncode == 0, f"CLI command failed with error:\n{result.stderr}"
+
+    # Check that the output file was created
+    assert output_json.exists(), "Output JSON file should be created"

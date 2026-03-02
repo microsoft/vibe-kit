@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 
@@ -9,7 +10,7 @@ def test_install_customizations_extracted(run_cli, tmp_path: Path):
     repo.mkdir(parents=True, exist_ok=True)
     (repo / "MANIFEST.yml").write_text("kit_info:\n  name: asset-kit\n  version: 1.0.0\n")
     # Assets only inside customizations/
-    (repo / "customizations" / "a.chatmode.md").write_text("Chatmode A")
+    (repo / "customizations" / "a.agent.md").write_text("Agent A")
     (repo / "customizations" / "nested" / "b.prompt.md").write_text("Prompt B")
     (repo / "customizations" / "c.instructions.md").write_text("Instruction C")
 
@@ -18,7 +19,7 @@ def test_install_customizations_extracted(run_cli, tmp_path: Path):
 
     state_dir = tmp_path / ".vibe-kit"
     # Individual files expected (names preserved)
-    chat_file = state_dir / "chatmodes" / "a.chatmode.md"
+    chat_file = state_dir / "agents" / "a.agent.md"
     prompt_file = state_dir / "prompts" / "b.prompt.md"
     instructions_file = state_dir / "instructions" / "c.instructions.md"
     assert chat_file.exists()
@@ -32,5 +33,10 @@ def test_install_customizations_extracted(run_cli, tmp_path: Path):
     result2 = run_cli(tmp_path, "install", "asset-kit")
     assert result2.returncode == 0
     # Files still single each
-    assert len(list((state_dir / "chatmodes").glob("a.chatmode.md"))) == 1
+    assert len(list((state_dir / "agents").glob("a.agent.md"))) == 1
     assert len(list((state_dir / "prompts").glob("b.prompt.md"))) == 1
+
+    customizations_index = json.loads((state_dir / "customizations-index.json").read_text(encoding="utf-8"))
+    agent_entries = customizations_index["kits"]["asset-kit"]["agents"]
+    assert list(agent_entries.keys()) == ["a.agent.md"]
+    assert agent_entries["a.agent.md"]["bundle"] == "agents/a.agent.md"
