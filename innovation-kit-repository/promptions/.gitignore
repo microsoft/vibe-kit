@@ -1,0 +1,5 @@
+# Cloned at setup time from https://github.com/microsoft/Promptions
+promptions-app/
+
+# User credentials
+.env
