@@ -35,11 +35,12 @@ Activate when users ask about Promptions, dynamic controls, structured prompt mi
 
 ## Routing
 
-- `docs/quick-start.md` for first-run integration.
-- `docs/application-patterns.md` for domain workflows.
-- `docs/data-integration.md` for transcript and telemetry patterns.
-- `docs/REFERENCE.md` for schema details.
-- `docs/troubleshooting.md` and `docs/performance-guide.md` for reliability and optimization.
+- `docs/launch-procedure.md` for running, trying, or demoing the reference apps (chatbot / image generator).
+- `docs/quick-start.md` for integrating Promptions into a new or existing application.
+- `docs/application-patterns.md` for domain workflows and product integration ideas.
+- `docs/data-integration.md` for transcript and telemetry wiring.
+- `docs/REFERENCE.md` for the full control schema when implementing or extending control types.
+- `docs/troubleshooting.md` and `docs/performance-guide.md` for diagnostics and optimization.
 
 ## Reference Links
 

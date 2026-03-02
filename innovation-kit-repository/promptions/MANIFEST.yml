@@ -25,7 +25,7 @@ prototyping:
 files:
   core_files:
     - {file: "SKILL.md", lines: 90, desc: "Agent skill definition", time: "5min"}
-    - {file: ".vibe-kit/instructions/promptions-innovation-kit.instructions.md", lines: 120, desc: "GitHub Copilot routing instructions", time: "5min"}
+    - {file: "docs/launch-procedure.md", lines: 180, desc: "Deterministic demo launch procedure", time: "5min"}
     - {file: "docs/promptions-prototyping-coach.md", lines: 52, desc: "Guided prototyping prompts", time: "5min"}
     - {file: "docs/quick-start.md", lines: 160, desc: "Integration tutorial", time: "10min"}
     - {file: "examples/control-schema.ts", lines: 100, desc: "Type definitions and schema", time: "5min"}
