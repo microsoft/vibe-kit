@@ -130,7 +130,7 @@ python3 scripts/quick_inspect.py data/*.nc
 1. Set credentials via environment variable (preferred):
   ```bash
   # Create .env file in assets/ directory:
-  cd .vibe-kit/innovation-kits/aurora/assets
+  cd .agents/skills/aurora/assets
   cp .env.example .env
   # Edit .env and add:
   CDS_API_KEY=your-api-key-here

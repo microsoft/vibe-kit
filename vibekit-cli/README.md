@@ -28,6 +28,35 @@ python -m pip install -e .[dev]
 pytest -q
 ```
 
+## Testing
+
+### Unit tests
+
+- Run quickly without any environment setup:
+
+  ```powershell
+  pytest tests/unit -q
+  ```
+
+### Integration tests
+
+- **With a real or dummy token (recommended):**
+
+  ```powershell
+  set-item env:GIT_PAT '<your-token>'
+  pytest tests/integration -q
+  ```
+
+  > Any of `GIT_PAT`, `GITHUB_PAT`, `GITHUB_TOKEN`, or `GH_TOKEN` is accepted. Tests exercise the installed `vibekit` binary via subprocess.
+
+- **Without a token:** tests are skipped by default, and you will see a warning explaining which variables are required. To force execution (the suite will fall back to an in-memory dummy token and emit a `RuntimeWarning`), run:
+
+  ```powershell
+  pytest tests/integration --allow-missing-github-token -q
+  ```
+
+  The guard helps surface misconfiguration early while still allowing local execution when network credentials are unavailable.
+
 ## Environment variables
 
 - `VIBEKIT_BASE_PATH` – absolute or relative path to the local `innovation-kit-repository` directory (the folder holding kit manifests). You can also point this to an HTTPS GitHub repository URL (for example `https://github.com/org/innovation-kit-repository`) to list/install kits remotely. If omitted, the CLI walks up from the current directory and, in this repo layout, picks `../innovation-kit-repository` by default.
@@ -48,10 +77,10 @@ uv venv
 $env:GIT_PAT="<YOUR_PAT>"
 
 # 3. (Optional) Override template repo URL
-$env:VIBEKIT_INIT_REPO_URL="https://github.com/microsoft/vibe-kit"
+$env:VIBEKIT_INIT_REPO_URL="https://dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base"
 
 # 4. Install vibekit CLI from feature branch
-uv pip install -v "git+https://$env:GIT_PAT@github.com/microsoft/vibe-kit@<branch-name>#subdirectory=vibekit-cli"
+uv pip install -v "git+https://ado:$env:GIT_PAT@dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base@<branch-name>#subdirectory=vibekit-cli"
 
 # 5. Initialize a project (new folder) OR in-place
 vibekit init MyProject
@@ -62,15 +91,15 @@ vibekit list
  
 ```powershell
 $env:GIT_PAT="<YOUR_PAT>"
-$env:VIBEKIT_INIT_REPO_URL="https://github.com/microsoft/vibe-kit"
+$env:VIBEKIT_INIT_REPO_URL="https://dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base"
 $env:UV_LOG="debug"
 $env:GIT_CURL_VERBOSE="1"
 $env:GIT_LFS_SKIP_SMUDGE='1'  # Skip downloading large/missing LFS blobs
 
-uvx --from "git+https://$GIT_PAT@github.com/microsoft/vibe-kit@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init MyProject
+uvx --from "git+https://msresearch:$GIT_PAT@dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init MyProject
 
 # In-place initialization
-uvx --from "git+https://$GIT_PAT@github.com/microsoft/vibe-kit@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init
+uvx --from "git+https://msresearch:$GIT_PAT@dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init
 
 # Follow-up commands
 vibekit list
@@ -87,16 +116,16 @@ uv venv
 
 # 2. Export required environment variables
 export GIT_PAT="<YOUR_PAT>"
-export VIBEKIT_INIT_REPO_URL="https://github.com/microsoft/vibe-kit"
+export VIBEKIT_INIT_REPO_URL="https://dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base"
 export GIT_LFS_SKIP_SMUDGE=1  # Prevent LFS smudge errors on large/missing files
 
 # 3. Install & init (inline env assignments supported in bash)
 GIT_LFS_SKIP_SMUDGE=1 UV_LOG=debug GIT_CURL_VERBOSE=1 \
-uvx --from "git+https://$GIT_PAT@github.com/microsoft/vibe-kit@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init MyProject
+uvx --from "git+https://msresearch:$GIT_PAT@dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init MyProject
 
 # Or initialize in-place
 GIT_LFS_SKIP_SMUDGE=1 UV_LOG=debug GIT_CURL_VERBOSE=1 \
-uvx --from "git+https://$GIT_PAT@github.com/microsoft/vibe-kit@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init
+uvx --from "git+https://msresearch:$GIT_PAT@dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base@<branch-name>#egg=vibekit-cli&subdirectory=vibekit-cli" vibekit init
 
 # Subsequent commands
 vibekit list
@@ -110,7 +139,7 @@ vibekit uninstall <kit-name>
 If network or quoting issues persist, clone first and install from the subdirectory:
 
 ```bash
-git clone "https://$GIT_PAT@github.com/microsoft/vibe-kit" vibe-kit-base
+git clone "https://msresearch:$GIT_PAT@dev.azure.com/msresearch/MSR-CreativeTech/_git/vibe-kit-base" vibe-kit-base
 uvx --from ./vibe-kit-base/vibekit-cli vibekit init MyProject
 ```
 
@@ -125,6 +154,6 @@ uvx --from ./vibe-kit-base/vibekit-cli vibekit init MyProject
 
 - `vibekit init [--source-label TEXT]` – creates the `.vibe-kit/` state folder and, when `VIBEKIT_BASE_PATH` points at a kit repository, copies baseline folders such as `frontend/`, `backend/`, `.devcontainer/`, and `.github/` if they are missing.
 - `vibekit list [--installed|-i] [--json]` – without flags prints available kits from the detected repository; `-i/--installed` switches to the locally installed registry; `--json` emits structured output for scripting.
-- `vibekit install kit-name` – copies the selected kit from the repository into `.vibe-kit/innovation-kits/kit-name`, records metadata, and stages customization files into the state directory (skipping conflicts). **Note:** Reload VS Code window after installation to activate custom chat modes.
+- `vibekit install kit-name` – copies the selected kit from the repository into `.agents/skills/kit-name`, records metadata, and stages customization files into the state directory (skipping conflicts). **Note:** Reload VS Code window after installation to activate custom agents.
 - `vibekit update kit-name [--dry-run]` – compares the installed version with the repository copy; `--dry-run` only reports differences, otherwise replaces the install and refreshes customization assets.
 - `vibekit uninstall kit-name` – removes the installed kit directory, prunes customization assets tracked for that kit, and updates `innovation-kits.json`.

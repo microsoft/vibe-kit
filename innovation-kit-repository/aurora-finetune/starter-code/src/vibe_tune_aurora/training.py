@@ -1,19 +1,17 @@
 """Training orchestration for Aurora fine-tuning."""
 
-from pathlib import Path
-
 import lightning as L
 from lightning.pytorch.callbacks import ModelCheckpoint
 
 from vibe_tune_aurora.aurora_module import LitAurora
 from vibe_tune_aurora.callbacks import SaveInitCheckpoint
-from vibe_tune_aurora.config import DEFAULT_SURF_VARS, TrainingConfig
+from vibe_tune_aurora.defaults.default_configs import DEFAULT_SURFACE_VARIABLE_NAMES, TrainingConfig
 from vibe_tune_aurora.data_processing.data_utils import (
     create_dataloader,
     load_normalization_stats,
     load_surface_stats,
 )
-from vibe_tune_aurora.types import SupervisedTrainingDataPair
+from vibe_tune_aurora.custom_types import SupervisedTrainingDataPair
 
 
 def train_era5_model(
@@ -21,6 +19,7 @@ def train_era5_model(
     validation_data_pairs: list[SupervisedTrainingDataPair],
     target_vars: tuple[str, ...],
     config: TrainingConfig | None = None,
+    model_additional_surface_variables: tuple[str] | None = None,
 ) -> LitAurora:
     """
     Train the Aurora model on ERA5 data with sensible defaults.
@@ -32,12 +31,18 @@ def train_era5_model(
         training_data_pairs: List of SupervisedTrainingDataPair objects for training
         target_vars: Target variables for loss computation
         config: Training configuration (uses defaults if None)
+        model_additional_surface_variables: Additional surface variables (beyond defaults) to
+            instantiate the Aurora model with. Without this, any data containing additional surface
+            variables would not be able to forward pass through the model.
 
     Returns:
         Trained LitAuroraUV model
     """
     if config is None:
         config = TrainingConfig()
+
+    if model_additional_surface_variables is None:
+        model_additional_surface_variables = tuple()
 
     # Load statistics
     surf_stats = load_surface_stats()
@@ -47,9 +52,14 @@ def train_era5_model(
     train_loader = create_dataloader(training_data_pairs)
     val_loader = create_dataloader(validation_data_pairs)
 
+    # Identify all surface variables needed to invoke the model
+    surface_vars = tuple(
+        set(DEFAULT_SURFACE_VARIABLE_NAMES).union(set(model_additional_surface_variables))
+    )
+
     # Create Lightning module (model created internally)
     lit_model = LitAurora(
-        surf_vars=DEFAULT_SURF_VARS,
+        surf_vars=surface_vars,
         target_vars=target_vars,
         init_mode=config.init_mode,
         surf_stats=surf_stats,
@@ -80,8 +90,8 @@ def train_era5_model(
         callbacks=[save_init_callback, checkpoint_last],
         accelerator="auto",
         devices="auto",
-        log_every_n_steps=2,
-        val_check_interval=0.10,
+        log_every_n_steps=10,
+        val_check_interval=0.5,
     )
 
     # Train model

@@ -21,7 +21,7 @@ def test_update_refreshes_customizations(run_cli, tmp_path: Path):
     (repo / "customizations" / "alpha.prompt.md").write_text("Alpha V2")
     (repo / "customizations" / "beta.prompt.md").write_text("Beta V2")
 
-    result = run_cli(tmp_path, "update", "c-kit")
+    result = run_cli(tmp_path, "update", "--yes", "c-kit")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "updated c-kit from 1.0.0 to 1.1.0" in result.stdout.lower()
     assert "refreshed" in result.stdout.lower()

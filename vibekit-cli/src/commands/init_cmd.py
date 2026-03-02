@@ -13,7 +13,8 @@ import typer
 from rich.console import Console
 from rich.panel import Panel
 
-from repo import load_repo_env
+from env import load_repo_env
+from constants import OperationExitCode
 
 
 console = Console()
@@ -39,7 +40,7 @@ def _render_status_panel(
 def _emit_status_and_exit(
     messages: list[str],
     variant: str = "success",
-    exit_code: int = 0,
+    exit_code: int = OperationExitCode.SUCCESS,
     title: str | None = None,
 ) -> None:
     # Always print to stdout (tests inspect stdout); errors can also echo to stderr if needed
@@ -90,7 +91,7 @@ def run_init(project_dir: str | None, verbose: bool = False) -> None:
         if target_dir.exists() and any(target_dir.iterdir()):
             _emit_status_and_exit([
                 f"Target directory '{target_dir}' already exists and is not empty."
-            ], "error", 2)
+            ], "error", OperationExitCode.INVALID_INPUT)
         target_dir.mkdir(parents=True, exist_ok=True)
         in_place = False
     else:
@@ -119,7 +120,12 @@ def run_init(project_dir: str | None, verbose: bool = False) -> None:
         template_path = Path(tmpdir) / "template"
         error_lines = _clone_template_repo(source_url, template_path, verbose)
         if error_lines:
-            _emit_status_and_exit(status_lines + error_lines, "error", 1, title="Clone Failed")
+            _emit_status_and_exit(
+                status_lines + error_lines,
+                "error",
+                OperationExitCode.NOT_FOUND,
+                title="Clone Failed",
+            )
         if verbose:
             status_lines.append("Source repository cloned successfully. Applying template ...")
 

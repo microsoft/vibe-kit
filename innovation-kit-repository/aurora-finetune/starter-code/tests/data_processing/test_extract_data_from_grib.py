@@ -1,10 +1,10 @@
 from pathlib import Path
 
 from aurora import Batch
-from vibe_tune_aurora.data_processing.extract_data_from_grib import (
+from vibe_tune_aurora.data_processing.grib_data_processing import (
     extract_training_data_from_grib,
 )
-from vibe_tune_aurora.types import SupervisedTrainingDataPair
+from vibe_tune_aurora.custom_types import SupervisedTrainingDataPair
 
 TESTS_DIR = Path(__file__).parent.parent
 
@@ -12,9 +12,7 @@ TESTS_DIR = Path(__file__).parent.parent
 def test_extract_training_data_from_grib_western_usa():
     """Test extraction of training data from Western USA GRIB files (Jan 1-7)."""
     single_level_file = TESTS_DIR / "inputs/era5_single_level_western_usa_jan_1_to_7.grib"
-    pressure_level_file = (
-        TESTS_DIR / "inputs/era5_pressure_level_western_usa_jan_1_to_7.grib"
-    )
+    pressure_level_file = TESTS_DIR / "inputs/era5_pressure_level_western_usa_jan_1_to_7.grib"
 
     # Extract training data with default parameters
     result = extract_training_data_from_grib(

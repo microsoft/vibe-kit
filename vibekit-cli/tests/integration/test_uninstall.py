@@ -1,12 +1,14 @@
 from pathlib import Path
 import json
 
+from constants import OperationExitCode
+
 
 def test_uninstall_not_installed(run_cli, tmp_path: Path):
     (tmp_path/".env").write_text("VIBEKIT_BASE_PATH=./innovation-kit-repository\n")
     run_cli(tmp_path, "init", check=True)
-    result = run_cli(tmp_path, "uninstall", "ghost")
-    assert result.returncode == 1
+    result = run_cli(tmp_path, "uninstall", "--yes", "ghost")
+    assert result.returncode == OperationExitCode.NOT_INSTALLED
     assert "not installed" in result.stdout.lower()
 
 
@@ -19,8 +21,8 @@ def test_uninstall_happy(run_cli, tmp_path: Path):
     run_cli(tmp_path, "install", "demo-u")
     kit_dir = tmp_path/".vibe-kit"/"innovation-kits"/"demo-u"
     assert kit_dir.exists()
-    result = run_cli(tmp_path, "uninstall", "demo-u")
-    assert result.returncode == 0
+    result = run_cli(tmp_path, "uninstall", "--yes", "demo-u")
+    assert result.returncode == OperationExitCode.SUCCESS
     assert "Uninstalled demo-u" in result.stdout
     assert not kit_dir.exists()
     # metadata removed
@@ -41,8 +43,8 @@ def test_uninstall_drift(run_cli, tmp_path: Path):
     # simulate drift
     import shutil
     shutil.rmtree(kit_dir)
-    result = run_cli(tmp_path, "uninstall", "demo-drift")
-    assert result.returncode == 0
+    result = run_cli(tmp_path, "uninstall", "--yes", "demo-drift")
+    assert result.returncode == OperationExitCode.SUCCESS
 
     assert "directory missing" in result.stdout.lower()
     assert "cleaning metadata" in result.stdout.lower()

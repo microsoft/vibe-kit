@@ -27,7 +27,7 @@ The Dev Container runs inside a Docker container and requires a Docker server to
 5. Install an Innovation Kit
    1. Open a new terminal window (CTRL+SHIFT+`)
    2. Type `vibekit install <innovation-kit>` (e.g. `vibekit install aurora`)
-   3. **Reload VS Code window** (Ctrl+Shift+P → "Developer: Reload Window") to activate custom chat modes
+   3. **Reload VS Code window** (Ctrl+Shift+P → "Developer: Reload Window") to activate custom agents
 6. Open GitHub Copilot Chat in Agent mode (CTRL+SHIFT+I)
 7. Choose your preferred model (we like GPT-5-Codex and Claude Sonnet 4.5 at the moment)
 8. Ask GitHub Copilot about your chosen innovation or to help you vibe code your prototype
@@ -42,11 +42,11 @@ vibekit list                # View available innovation kits
 vibekit install <kit-name>  # Install an innovation kit
 ```
 
-**After installation:** Reload VS Code window (Ctrl+Shift+P → "Developer: Reload Window") to activate custom chat modes.
+**After installation:** Reload VS Code window (Ctrl+Shift+P → "Developer: Reload Window") to activate custom agents.
 
 Installing an innovation kit with the CLI will:
-- Copy the innovation kit's files into `.vibe-kit/innovation-kits/<kit-name>`
-- Stage any customizations (instructions, chat modes, and prompts) into `.vibe-kit`
+- Copy the innovation kit's files into `.agents/skills/<kit-name>`
+- Stage any customizations (instructions, agents, and prompts) into `.vibe-kit`
 - Update your local innovation kit registry in `.vibe-kit/innovation-kits.json`
 
 ### Available commands

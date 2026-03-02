@@ -11,22 +11,36 @@
     // Controls how thinking is rendered.
     //  - collapsed: Thinking parts will be collapsed by default.
     //  - collapsedPreview: Thinking parts will be expanded first, then collapse once we reach a part that is not thinking.
-    //  - expanded: Thinking parts will be expanded by default.
-    //  - none: Do not show the thinking
-    // Default: "collapsed"
-    "chat.agent.thinkingStyle": "expanded",
+    //  - fixedScrolling: Show thinking in a fixed-height streaming panel that auto-scrolls; click header to expand to full height.
+    // Default: "fixedScrolling"
+    "chat.agent.thinkingStyle": "fixedScrolling",
+    // When enabled, tool failures are automatically expanded in the chat UI to show error details.
+    // Default: true
+    "chat.tools.autoExpandFailures": true,
+    // Controls whether to use an LLM to generate summary titles for thinking sections.
+    // Default: true
+    "chat.agent.thinking.generateTitles": true,
+    // When enabled, terminal tool calls are displayed inside the thinking dropdown with a simplified view.
+    // Default: true
+    "chat.agent.thinking.terminalTools": true,
+
     // Specify location(s) of instructions files (`*.instructions.md`) that can be attached in Chat sessions. [Learn More](https://aka.ms/vscode-ghcp-custom-instructions).
     // Default: {".github/instructions": true}
     "chat.instructionsFilesLocations": {
         ".github/instructions": true,
         ".vibe-kit/instructions": true,
     },
-    // Specify location(s) of custom chat mode files (`*.chatmode.md`). [Learn More](https://aka.ms/vscode-ghcp-custom-chat-modes).
+    // Specify location(s) of custom agent files (`*.agent.md`). [Learn More](https://aka.ms/vscode-ghcp-custom-chat-modes).
     // Relative paths are resolved from the root folder(s) of your workspace.
-    // Default: {".github/chatmodes": true}
-    "chat.modeFilesLocations": {
-        ".github/chatmodes": true,
-        ".vibe-kit/chatmodes": true,
+    "chat.agentFilesLocations": {
+        ".github/agents": true,
+        ".claude/agents": true,
+        ".vibe-kit/agents": true,
+    },
+    // Specify location(s) of custom agent skills (`SKILL.md`). [Learn More](https://code.visualstudio.com/docs/copilot/customization/agent-skills).
+    // Relative paths are resolved from the root folder(s) of your workspace.
+    "chat.agentSkillsLocations": {
+        ".agents/skills": true,
     },
     // Specify location(s) of reusable prompt files (`*.prompt.md`) that can be run in Chat sessions. [Learn More](https://aka.ms/vscode-ghcp-prompt-snippets).
     // Relative paths are resolved from the root folder(s) of your workspace.
@@ -100,6 +114,9 @@
     // Whether to use the next version of inline chat.
     // Default: false
     "inlineChat.enableV2": true,
+    // Controls whether skills are provided as specialized capabilities to the chat requests. Skills are loaded from `.github/skills`, `~/.copilot/skills`, `.claude/skills`, and `~/.claude/skills`. The language model can load these skills on-demand if the `read` tool is available. Learn more about [Agent Skills](https://aka.ms/vscode-agent-skills).
+    // default: false
+    "chat.useAgentSkills": true,
     // Controls whether instructions from `AGENTS.MD` file found in a workspace roots are added to all chat requests.
     // Default: true
     "chat.useAgentsMdFile": true,
@@ -113,6 +130,10 @@
     "github.copilot.chat.newWorkspace.useContext7": false,
     // Controls whether to allow auto approval in the run in terminal tool.
     // Default: true
+    
+    "chat.requestQueuing.enabled" : true,
+    "chat.requestQueuing.defaultAction": "queue",
+
     "chat.tools.terminal.enableAutoApprove": true,
     // A list of commands or regular expressions that control whether the run in terminal tool commands require explicit approval. 
     // These will be matched against the start of a command. 
@@ -192,6 +213,19 @@
         "next": true,
         "bun": true,
     },
+    // Controls whether detected file write operations are blocked in the run in terminal tool. When detected, this will require explicit approval regardless of whether the command would normally be auto approved. Note that this cannot detect all possible methods of writing files, this is what is currently detected:
+    //
+    // - File redirection (detected via the bash or PowerShell tree sitter grammar)
+    //  - never: Allow all detected file writes.
+    //  - outsideWorkspace: Block file writes detected outside the workspace. This depends on the shell integration feature working correctly to determine the current working directory of the terminal.
+    //  - all: Block all detected file writes.
+    // Default: outsideWorkspace
+    "chat.tools.terminal.blockDetectedFileWrites": "never",
+    // Where to show the output from the run in terminal tool.
+    //  - terminal: Reveal the terminal in the panel or editor in addition to chat.
+    //  - chat: Reveal the terminal output within chat only.
+    // Default: chat
+    "chat.tools.terminal.outputLocation": "terminal",
     // List of extensions to install upon connection to a remote when already installed locally.
     "remote.defaultExtensionsIfInstalledLocally": [
         "GitHub.copilot",
@@ -211,7 +245,7 @@
         ".vibe-kit": "prompts",
         ".vibekit": "prompts",
     },
-    // Custom VS Code window colors set by the Peacock extension
+    "peacock.remoteColor": "#0801c8",
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#0a01fb",
         "activityBar.background": "#0a01fb",
@@ -237,5 +271,4 @@
         "titleBar.inactiveBackground": "#0801c899",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.remoteColor": "#0801c8",
 }

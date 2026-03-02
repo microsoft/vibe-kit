@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from vibe_tune_aurora.config import TrainingConfig
-from vibe_tune_aurora.data_processing.extract_data_from_grib import (
+from vibe_tune_aurora.defaults.default_configs import TrainingConfig
+from vibe_tune_aurora.data_processing.grib_data_processing import (
     extract_training_data_from_grib,
 )
 from vibe_tune_aurora.training import train_era5_model

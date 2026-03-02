@@ -1,13 +1,17 @@
 from pathlib import Path
 import json
 
+from constants import REMOTE_SOURCE, LOCAL_SOURCE
+
 
 def test_list_available_no_repo(run_cli, tmp_path: Path):
     # No innovation-kit-repository yet
     run_cli(tmp_path, "init")
     res = run_cli(tmp_path, "list")
     assert res.returncode == 0
-    assert "No local innovation-kit-repository found" in res.stdout
+    assert f"Repository source: {REMOTE_SOURCE}" in res.stdout
+    assert "Available Innovation Kits (combined)" in res.stdout
+    assert "test-kit-1" in res.stdout
 
 
 def test_list_available_and_installed(run_cli, tmp_path: Path):
@@ -21,13 +25,17 @@ def test_list_available_and_installed(run_cli, tmp_path: Path):
     # kit-b without manifest -> version 0.0.0 default
 
     res_avail = run_cli(tmp_path, "list")
-    assert " kit-a  │ 0.1.0   │ " in res_avail.stdout
-    assert " kit-b  │ 0.0.0   │ " in res_avail.stdout
+    assert f"Repository source: {LOCAL_SOURCE}" in res_avail.stdout
+    assert "kit-a" in res_avail.stdout
+    assert "0.1.0" in res_avail.stdout
+    assert "kit-b" in res_avail.stdout
+    assert "0.0.0" in res_avail.stdout
 
     # install kit-a
     run_cli(tmp_path, "install", "kit-a")
     res_inst = run_cli(tmp_path, "list", "-i")
-    assert " kit-a  │ 0.1.0   │ " in res_inst.stdout
+    assert "kit-a" in res_inst.stdout
+    assert "0.1.0" in res_inst.stdout
 
     # installed JSON
     res_inst_json = run_cli(tmp_path, "list", "-i", "--json")

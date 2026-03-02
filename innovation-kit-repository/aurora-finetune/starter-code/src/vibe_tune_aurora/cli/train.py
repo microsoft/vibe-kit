@@ -3,8 +3,8 @@
 import argparse
 from pathlib import Path
 
-from vibe_tune_aurora.config import TARGET_VAR_PRESETS, TrainingConfig
-from vibe_tune_aurora.data_processing.extract_data_from_grib import (
+from vibe_tune_aurora.defaults.default_configs import TARGET_VAR_PRESETS, TrainingConfig
+from vibe_tune_aurora.data_processing.grib_data_processing import (
     extract_training_data_from_grib,
 )
 from vibe_tune_aurora.training import train_era5_model
@@ -76,23 +76,32 @@ def main():
             "initialized_and_custom",
             "initializer_checkpoint",
         ],
-        help="Model initialization mode: 'pretrained_and_custom' for pretrained weights + custom vars, "
-        "'pretrained' for pretrained weights only, "
-        "'initialized_and_custom' for random initialization + custom vars, "
-        "'initializer_checkpoint' for loading from custom initializer checkpoint",
+        help=(
+            "Model initialization mode: "
+            "'pretrained_and_custom' for pretrained weights + custom vars, "
+            "'pretrained' for pretrained weights only, "
+            "'initialized_and_custom' for random initialization + custom vars, "
+            "'initializer_checkpoint' for loading from custom initializer checkpoint"
+        ),
     )
     parser.add_argument(
         "--initializer-checkpoint-path",
         type=str,
         default=None,
-        help="Path to initializer checkpoint file (required when --init-mode is 'initializer_checkpoint')",
+        help=(
+            "Path to initializer checkpoint file (required when --init-mode "
+            "is 'initializer_checkpoint')"
+        ),
     )
     parser.add_argument(
         "--lr_scheduler",
         type=str,
         default="cosine_annealing",
         choices=[None, "cosine_annealing"],
-        help="Learning rate scheduler: None for no scheduler, 'cosine_annealing' for cosine annealing (default: cosine_annealing)",
+        help=(
+            "Learning rate scheduler: None for no scheduler, 'cosine_annealing' for "
+            "cosine annealing (default: cosine_annealing)"
+        ),
     )
     parser.add_argument(
         "--log_dir",
@@ -104,13 +113,23 @@ def main():
         "--patch_size",
         type=int,
         default=4,
-        help="Patch size for Aurora model - spatial dimensions will be cropped to multiples (default: 4)",
+        help=(
+            "Patch size for Aurora model - spatial dimensions will be cropped "
+            "to multiples (default: 4)"
+        ),
     )
     parser.add_argument(
         "--skip_first_n_timesteps",
         type=int,
         default=0,
         help="Number of initial timesteps to skip before creating training pairs (default: 0)",
+    )
+    parser.add_argument(
+        "--data_additional_surf_vars",
+        type=lambda x: x.split(","),
+        default=[],
+        help="List (input as comma-separated list of variable names, with no spaces between "
+        "commas) of additional surface variables (beyond defaults) to extract from raw data",
     )
 
     args = parser.parse_args()
@@ -124,6 +143,12 @@ def main():
     # Get target variables from preset
     target_vars = TARGET_VAR_PRESETS[args.loss_type]
 
+    # Identify additional surface variables to extract from raw data. Also assume model
+    # additional variables matches with the data additional variables, although in general this
+    # does not have to be true.
+    data_additional_surface_variables = tuple(args.data_additional_surf_vars)
+    model_additional_surface_variables = data_additional_surface_variables
+
     # Create config from args
     config = TrainingConfig(
         max_epochs=args.max_epochs,
@@ -135,12 +160,13 @@ def main():
     )
 
     # Extract training/validation data from GRIB files
-    print(f"Extracting training/validation data from GRIB files...")
+    print("Extracting training/validation data from GRIB files...")
     training_data_pairs = extract_training_data_from_grib(
         single_level_file=args.single_levels_training_file,
         pressure_level_file=args.pressure_levels_training_file,
         patch_size=args.patch_size,
         skip_first_n_timesteps=args.skip_first_n_timesteps,
+        additional_surface_variables=data_additional_surface_variables,
     )
 
     validation_data_pairs = extract_training_data_from_grib(
@@ -148,6 +174,7 @@ def main():
         pressure_level_file=args.pressure_levels_validation_file,
         patch_size=args.patch_size,
         skip_first_n_timesteps=args.skip_first_n_timesteps,
+        additional_surface_variables=data_additional_surface_variables,
     )
 
     # Train
@@ -160,6 +187,7 @@ def main():
         validation_data_pairs=validation_data_pairs,
         target_vars=target_vars,
         config=config,
+        model_additional_surface_variables=model_additional_surface_variables,
     )
 
     print("ERA5 training completed!")

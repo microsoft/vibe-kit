@@ -18,15 +18,15 @@
 
 | **File**                                       | **Contents**                                                                    | **Source**                                                |
 |------------------------------------------------|---------------------------------------------------------------------------------|-----------------------------------------------------------|
-| `.vibe-kit/innovation-kits/aurora/assets/samples/era5-surface-20250801.nc`  | 24 hourly global slices (2m temperature, 10m winds, mean sea-level pressure) | Copernicus ERA5 reanalysis, 2025-08-01, 0.25° resolution |
-| `.vibe-kit/innovation-kits/aurora/assets/samples/era5-pressure-20250801.nc` | 00/06/12/18 UTC pressure-level cube for `t/u/v/q/z` across 1000–100 hPa      | Aligns with Aurora's default atmospheric channels        |
-| `.vibe-kit/innovation-kits/aurora/assets/samples/era5-static-20250801.nc`   | Orography (`z`), land/sea mask (`lsm`), soil type (`slt`)                    | Take the first (and only) timestamp as static features   |
+| `.agents/skills/aurora/assets/samples/era5-surface-20250801.nc`  | 24 hourly global slices (2m temperature, 10m winds, mean sea-level pressure) | Copernicus ERA5 reanalysis, 2025-08-01, 0.25° resolution |
+| `.agents/skills/aurora/assets/samples/era5-pressure-20250801.nc` | 00/06/12/18 UTC pressure-level cube for `t/u/v/q/z` across 1000–100 hPa      | Aligns with Aurora's default atmospheric channels        |
+| `.agents/skills/aurora/assets/samples/era5-static-20250801.nc`   | Orography (`z`), land/sea mask (`lsm`), soil type (`slt`)                    | Take the first (and only) timestamp as static features   |
 
 - **License:** Copernicus ERA5, single-use licence already accepted when generating the sample; downstream users must review the [terms](https://cds.climate.copernicus.eu/cdsapp#!/terms/climate-data-store-terms-licence).
 - **Usage:** The quick start loads these files via `xarray` → `torch`; see [`quick-start.md`](./quick-start.md) for the full snippet.
-- **Visualise:** Run `python .vibe-kit/innovation-kits/aurora/assets/samples/plot_era5_quicklook.py` to generate Plotly heatmaps for any bundled timestep.
+- **Visualise:** Run `python .agents/skills/aurora/assets/samples/plot_era5_quicklook.py` to generate Plotly heatmaps for any bundled timestep.
 - **Run Aurora:** Follow [quick-start Step 3](./quick-start.md#step-3-load-the-era5-bundle-and-run-a-forward-pass) to execute `AuroraSmallPretrained` on the bundled tensors, then use [Step 5](./quick-start.md#step-5-persist-forecasts-for-visualization-optional) to save outputs for plotting.
-- **Energy scenario tip:** When modelling wind assets, collect a coastal ERA5 subset (surface + pressure) sized for your ramp detection interval. Reuse the inspection helpers in `.vibe-kit/innovation-kits/aurora/assets/scripts/` or adapt your own tooling to mirror Aurora’s variable mapping.
+- **Energy scenario tip:** When modelling wind assets, collect a coastal ERA5 subset (surface + pressure) sized for your ramp detection interval. Reuse the inspection helpers in `.agents/skills/aurora/assets/scripts/` or adapt your own tooling to mirror Aurora’s variable mapping.
 
 ## Download Your Own ERA5 Data
 
@@ -43,7 +43,7 @@ When adapting the Norway example to your region or time period, use the provided
 
 2. **Configure credentials** (recommended method):
    ```bash
-   cd .vibe-kit/innovation-kits/aurora/assets
+   cd .agents/skills/aurora/assets
    cp .env.example .env
    ```
     Instruct user:
@@ -58,7 +58,7 @@ When adapting the Norway example to your region or time period, use the provided
 
 **Download surface data:**
 ```bash
-python .vibe-kit/innovation-kits/aurora/assets/scripts/download_era5_subset.py \
+python .agents/skills/aurora/assets/scripts/download_era5_subset.py \
     --dataset reanalysis-era5-single-levels \
     --variables 2m_temperature 10m_u_component_of_wind 10m_v_component_of_wind mean_sea_level_pressure \
     --year 2025 --month 06 --days 01 02 03 04 05 06 07 \
@@ -141,11 +141,11 @@ batch = Batch(
 
 1. From the `backend` directory, install dependencies via `pip install -r requirements.txt`.
 2. Obtain the **Aurora Small wheel** (`aurora_small-*.whl`) from the research team and install it with `pip install <wheel>`. Until the distribution URL is published, treat this as a **blocker**.
-3. (Optional) Pre-download checkpoints into a shared cache and pass `--checkpoint` to `python .vibe-kit/innovation-kits/aurora/assets/scripts/run_aurora_small_local.py` to avoid repeated 500 MB transfers.
+3. (Optional) Pre-download checkpoints into a shared cache and pass `--checkpoint` to `python .agents/skills/aurora/assets/scripts/run_aurora_small_local.py` to avoid repeated 500 MB transfers.
 4. Execute the helper script to produce `npz` tensors:
-   ```bash
-   python .vibe-kit/innovation-kits/aurora/assets/scripts/run_aurora_small_local.py
-   ```
+    ```bash
+    python .agents/skills/aurora/assets/scripts/run_aurora_small_local.py
+    ```
 5. Feed the resulting `npz` tensors into dashboards or convert them to NetCDF for downstream sharing.
 
 > Optional offload: If you later provision an Azure AI Foundry deployment, follow the switch-over recipe in [quick-start.md](./quick-start.md) to submit the same batches remotely. Until then, treat the local workflow above as the default path.

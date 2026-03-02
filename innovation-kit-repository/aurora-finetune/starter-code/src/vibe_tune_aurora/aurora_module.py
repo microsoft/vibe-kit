@@ -3,13 +3,12 @@
 from pathlib import Path
 import lightning as L
 import torch
-from aurora import Aurora
 
 from vibe_tune_aurora.data_processing.data_utils import load_normalization_stats, load_surface_stats
 from vibe_tune_aurora.losses import compute_mae_loss as compute_mae_loss_fn
 from vibe_tune_aurora.model_init import create_aurora_model
 
-from vibe_tune_aurora.config import DEFAULT_SURF_VARS, TrainingConfig
+from vibe_tune_aurora.defaults.default_configs import DEFAULT_SURFACE_VARIABLE_NAMES, TrainingConfig
 
 
 class LitAurora(L.LightningModule):
@@ -94,7 +93,6 @@ class LitAurora(L.LightningModule):
             target_batch,
             self.target_vars,
             self.norm_stats,
-            self.device,
         )
 
     def training_step(self, batch, batch_idx):
@@ -111,7 +109,7 @@ class LitAurora(L.LightningModule):
         input_batch, target_batch = batch
         prediction = self.forward(input_batch)
 
-        # Compute MAE loss over all variables
+        # Compute MAE loss
         loss, n_vars = self.compute_mae_loss(prediction, target_batch)
 
         self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
@@ -195,7 +193,7 @@ def create_default_aurora_lightning_module(
     )
 
     lit_module = LitAurora(
-        surf_vars=DEFAULT_SURF_VARS,
+        surf_vars=DEFAULT_SURFACE_VARIABLE_NAMES,
         target_vars=target_vars,
         init_mode=config.init_mode,
         surf_stats=load_surface_stats(),

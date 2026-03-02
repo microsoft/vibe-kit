@@ -489,5 +489,5 @@ Anything beyond ~2 K RMSE indicates either a bad input pull or a long forecast
 
 ---
 
-**Part of:** [Aurora Innovation Kit](.vibe-kit/innovation-kits/aurora/INNOVATION_KIT.md)  
-**Reference code:** [assets/norway-example/scripts/run_aurora_inference.py](.vibe-kit/innovation-kits/aurora/assets/norway-example/scripts/run_aurora_inference.py)
+**Part of:** [Aurora Innovation Kit](.agents/skills/aurora/SKILL.md)  
+**Reference code:** [assets/norway-example/scripts/run_aurora_inference.py](.agents/skills/aurora/assets/norway-example/scripts/run_aurora_inference.py)
