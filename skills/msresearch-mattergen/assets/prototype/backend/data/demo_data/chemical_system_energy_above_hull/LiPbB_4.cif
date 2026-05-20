@@ -1,0 +1,28 @@
+data_image0
+_chemical_formula_structural       LiPbB
+_chemical_formula_sum              "Li1 Pb1 B1"
+_cell_length_a       3.828117363098231
+_cell_length_b       3.83792251263968
+_cell_length_c       4.446654796600342
+_cell_angle_alpha    89.98255137152712
+_cell_angle_beta     89.98009933255469
+_cell_angle_gamma    119.92291978114302
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  Li  Li1       1.0  0.9228559136390685  0.3385241627693176  0.4926530122756958  1.0000
+  Pb  Pb1       1.0  0.25738614797592163  0.0018048286437988281  0.9914737343788147  1.0000
+  B   B1        1.0  0.2539837062358856  0.0035637682303786273  0.4912733733654022  1.0000

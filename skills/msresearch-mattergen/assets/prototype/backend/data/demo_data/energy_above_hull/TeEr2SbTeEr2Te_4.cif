@@ -1,0 +1,33 @@
+data_image0
+_chemical_formula_structural       TeEr2SbTeEr2Te
+_chemical_formula_sum              "Te3 Er4 Sb1"
+_cell_length_a       6.119785727729722
+_cell_length_b       6.122372627258307
+_cell_length_c       6.12151575088501
+_cell_angle_alpha    90.00000250447795
+_cell_angle_beta     89.96900027492404
+_cell_angle_gamma    89.95471152017146
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  Te  Te1       1.0  0.02247711271047592  0.00048339366912841797  0.5162528157234192  1.0000
+  Er  Er1       1.0  0.5220745801925659  0.0004349946975708008  0.5163495540618896  1.0000
+  Er  Er2       1.0  0.021972984075546265  0.00036996183916926384  0.01601318269968033  1.0000
+  Sb  Sb1       1.0  0.5220068693161011  0.00037693977355957026  0.016107134521007538  1.0000
+  Te  Te2       1.0  0.02164343185722828  0.5004526376724243  0.015989242121577263  1.0000
+  Er  Er3       1.0  0.522024393081665  0.5002543330192566  0.01598314195871353  1.0000
+  Er  Er4       1.0  0.02199789136648178  0.5003711581230164  0.5161979794502258  1.0000
+  Te  Te3       1.0  0.5220103859901428  0.500355839729309  0.5162062048912048  1.0000

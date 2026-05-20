@@ -1,0 +1,194 @@
+{
+  "checkpoints": {
+    "mattergen_base": {
+      "name": "mattergen_base",
+      "description": "Unconditional generation - no property constraints",
+      "properties": []
+    },
+    "ml_bulk_modulus": {
+      "name": "ml_bulk_modulus",
+      "description": "ML-predicted bulk modulus conditioning",
+      "properties": ["ml_bulk_modulus"]
+    },
+    "dft_band_gap": {
+      "name": "dft_band_gap",
+      "description": "DFT-calculated band gap conditioning",
+      "properties": ["dft_band_gap"]
+    },
+    "space_group": {
+      "name": "space_group",
+      "description": "Crystal space group symmetry conditioning",
+      "properties": ["space_group"]
+    },
+    "dft_mag_density": {
+      "name": "dft_mag_density",
+      "description": "DFT-calculated magnetic density conditioning",
+      "properties": ["dft_mag_density"]
+    },
+    "chemical_system": {
+      "name": "chemical_system",
+      "description": "Chemical composition (element) conditioning",
+      "properties": ["chemical_system"]
+    },
+    "dft_mag_density_hhi_score": {
+      "name": "dft_mag_density_hhi_score",
+      "description": "Joint magnetic density + sustainability (HHI) conditioning",
+      "properties": ["dft_mag_density", "hhi_score"]
+    },
+    "energy_above_hull": {
+      "name": "energy_above_hull",
+      "description": "Energy above convex hull conditioning for stability",
+      "properties": ["energy_above_hull"],
+      "modes": ["production"]
+    },
+    "chemical_system_energy_above_hull": {
+      "name": "chemical_system_energy_above_hull",
+      "description": "Joint chemical system + energy above hull conditioning",
+      "properties": ["chemical_system", "energy_above_hull"],
+      "modes": ["production"]
+    }
+  },
+  "groups": [
+    {
+      "id": "mechanical",
+      "label": "Mechanical",
+      "description": "Properties related to mechanical behavior"
+    },
+    {
+      "id": "electronic",
+      "label": "Electronic",
+      "description": "Properties related to electronic structure"
+    },
+    {
+      "id": "structural",
+      "label": "Structural",
+      "description": "Properties related to crystal structure"
+    },
+    {
+      "id": "magnetic",
+      "label": "Magnetic",
+      "description": "Properties related to magnetic behavior"
+    },
+    {
+      "id": "chemical",
+      "label": "Chemical",
+      "description": "Properties related to chemical composition and stability"
+    }
+  ],
+  "supportedElements": [
+    "H", "Li", "Be", "B", "C", "N", "O", "F",
+    "Na", "Mg", "Al", "Si", "P", "S", "Cl",
+    "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn",
+    "Ga", "Ge", "As", "Se", "Br",
+    "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Ru", "Rh", "Pd", "Ag", "Cd",
+    "In", "Sn", "Sb", "Te", "I",
+    "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu",
+    "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg",
+    "Tl", "Pb", "Bi", "Ac", "Th", "Pa", "U", "Np", "Pu"
+  ],
+  "unsupportedElements": ["He", "Ne", "Ar", "Kr", "Xe", "Tc", "Pm"],
+  "properties": [
+    {
+      "id": "ml_bulk_modulus",
+      "label": "Bulk Modulus (ML)",
+      "type": "numeric",
+      "description": "Machine learning predicted bulk modulus - measures resistance to uniform compression",
+      "operators": [],
+      "example": "400",
+      "unit": "GPa",
+      "min": 0,
+      "max": 500,
+      "group": "mechanical",
+      "checkpoint": "ml_bulk_modulus",
+      "compatibleWith": []
+    },
+    {
+      "id": "dft_band_gap",
+      "label": "Band Gap (DFT)",
+      "type": "numeric",
+      "description": "DFT-calculated electronic band gap - determines electrical conductivity type",
+      "operators": [],
+      "example": "1.5",
+      "unit": "eV",
+      "min": 0,
+      "max": 10,
+      "group": "electronic",
+      "checkpoint": "dft_band_gap",
+      "compatibleWith": []
+    },
+    {
+      "id": "space_group",
+      "label": "Space Group",
+      "type": "integer",
+      "description": "Crystallographic space group number (1-230) defining crystal symmetry",
+      "operators": [],
+      "example": "225",
+      "unit": null,
+      "min": 1,
+      "max": 230,
+      "group": "structural",
+      "checkpoint": "space_group",
+      "compatibleWith": []
+    },
+    {
+      "id": "dft_mag_density",
+      "label": "Magnetic Density (DFT)",
+      "type": "numeric",
+      "description": "DFT-calculated magnetic moment density per atom",
+      "operators": [],
+      "example": "0.5",
+      "unit": "μB/atom",
+      "min": 0,
+      "max": 5,
+      "group": "magnetic",
+      "checkpoint": "dft_mag_density",
+      "compatibleWith": ["hhi_score"]
+    },
+    {
+      "id": "hhi_score",
+      "label": "HHI Score",
+      "type": "numeric",
+      "description": "Herfindahl-Hirschman Index for element scarcity - lower values indicate more abundant/sustainable elements",
+      "operators": [],
+      "example": "5000",
+      "unit": null,
+      "min": 0,
+      "max": 10000,
+      "group": "chemical",
+      "checkpoint": "dft_mag_density_hhi_score",
+      "compatibleWith": ["dft_mag_density"],
+      "requiresProperty": "dft_mag_density",
+      "requiresPropertyModes": ["research"]
+    },
+    {
+      "id": "energy_above_hull",
+      "label": "Energy Above Hull",
+      "type": "numeric",
+      "description": "Energy above the convex hull - lower values indicate more thermodynamically stable structures",
+      "operators": [],
+      "example": "0.1",
+      "unit": "eV/atom",
+      "min": 0,
+      "max": 1,
+      "group": "chemical",
+      "checkpoint": "energy_above_hull",
+      "compatibleWith": ["chemical_system"],
+      "modes": ["production"]
+    },
+    {
+      "id": "chemical_system",
+      "label": "Chemical System",
+      "type": "chemical_system",
+      "description": "Specify which elements the generated material should contain (e.g., Li-O for lithium oxide)",
+      "operators": ["="],
+      "example": "Li-O",
+      "unit": null,
+      "min": null,
+      "max": null,
+      "group": "chemical",
+      "checkpoint": "chemical_system",
+      "compatibleWith": ["energy_above_hull"],
+      "compatibleWithModes": ["production"]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+# Exclude large directories not needed for build
+mattergen/
+mattersim/
+.ruff_cache/
+docs/
+infra/
+*.yaml
+*.md
+Pipfile*
+test_*
+__pycache__/
+*.pyc
+.git/
+node_modules/
+
+# Keep what we need
+!frontend/
+!backend/
+!azure-deployment/

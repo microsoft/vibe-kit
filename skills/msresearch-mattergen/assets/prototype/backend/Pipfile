@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+pydantic = "*"
+pydantic-settings = "*"
+python-dotenv = "*"
+httpx = "*"
+azure-identity = "*"
+aiohttp = "*"
+pymatgen = "*"
+lmdb = "*"
+cachetools = "*"
+monty = "*"
+smact = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

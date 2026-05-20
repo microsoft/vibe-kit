@@ -1,0 +1,47 @@
+# Aurora Finetune Exploration Demo — local launch
+#
+# One-command interactive demo for exploring how training data size affects
+# Aurora weather predictions. Uses bundled cached evaluation results — no GPU,
+# no GRIB data, and no model checkpoints required.
+#
+# Launch:
+#   docker compose up --build
+#
+# Then open http://localhost:8101
+#
+# Notes:
+# - Default build is "slim" (INSTALL_MODEL_DEPS=false). The bundled LMDB cache
+#   covers the heatmaps and metrics surfaced by the React UI.
+# - To enable live model inference (requires raw GRIB data and checkpoints
+#   not bundled with the skill), rebuild with INSTALL_MODEL_DEPS=true:
+#       INSTALL_MODEL_DEPS=true docker compose build --build-arg INSTALL_MODEL_DEPS=true
+# - Backend Swagger UI: http://localhost:8100/docs
+
+services:
+  backend:
+    build:
+      context: ../../..
+      dockerfile: assets/finetune/finetune-exploration-demo-app/backend/Dockerfile
+      args:
+        INSTALL_MODEL_DEPS: "${INSTALL_MODEL_DEPS:-false}"
+    image: aurora-finetune-backend:demo
+    ports:
+      - "8100:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+    image: aurora-finetune-frontend:demo
+    environment:
+      BACKEND_SERVICE: backend
+    ports:
+      - "8101:80"
+    depends_on:
+      backend:
+        condition: service_healthy

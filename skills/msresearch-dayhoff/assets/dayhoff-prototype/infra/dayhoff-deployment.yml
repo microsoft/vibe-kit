@@ -1,0 +1,40 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+name: dayhoff-multi-v1
+endpoint_name: dayhoff-multi
+environment:
+  # Build from ../backend/score/Dockerfile and push to your ACR.
+  image: <your-acr>.azurecr.io/dayhoff-score:v1
+  inference_config:
+    liveness_route:
+      port: 5001
+      path: /health
+    readiness_route:
+      port: 5001
+      path: /ready
+    scoring_route:
+      port: 5001
+      path: /score
+environment_variables:
+  DAYHOFF_LOAD_ALL: "1"
+  HF_HOME: "/app/models"
+instance_type: Standard_NC24ads_A100_v4
+# Single instance for v1 ship: demo traffic is sporadic and 1× A100 with the
+# v6 Mamba CUDA kernels stays healthy. Bump to 2 later for zero-downtime HA.
+instance_count: 1
+request_settings:
+  # AML caps this at 180s. 3B + 512 tokens fits in ~120s on a warm A100.
+  request_timeout_ms: 180000
+  max_concurrent_requests_per_instance: 1
+liveness_probe:
+  initial_delay: 600
+  period: 30
+  # Long generations can hold the GIL inside CUDA kernels, briefly blocking
+  # the probe thread. Loosen timeout + failures so AML doesn't kill the pod
+  # mid-request. (~30 min of failed probes before restart.)
+  timeout: 30
+  failure_threshold: 60
+readiness_probe:
+  initial_delay: 600
+  period: 30
+  timeout: 30
+  failure_threshold: 60

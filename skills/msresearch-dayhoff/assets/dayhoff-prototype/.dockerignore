@@ -1,0 +1,18 @@
+# Don't send to Docker build context
+.hf_cache/
+__pycache__/
+*.pyc
+.venv/
+.env
+node_modules/
+.git/
+*.log
+logs.txt
+prior-chat.txt
+docs/
+infra/
+.pytest_cache/
+htmlcov/
+.coverage
+*.bin
+*.safetensors

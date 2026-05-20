@@ -1,0 +1,31 @@
+data_image0
+_chemical_formula_structural       S2MoTeWS
+_chemical_formula_sum              "S3 Mo1 Te1 W1"
+_cell_length_a       3.2929400344984012
+_cell_length_b       3.2958498490096773
+_cell_length_c       31.319507598876953
+_cell_angle_alpha    89.71070983565538
+_cell_angle_beta     90.13885342100943
+_cell_angle_gamma    120.01683452330701
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  S   S1        1.0  0.02398139238357544  0.05967670679092407  0.8423547148704528  1.0000
+  S   S2        1.0  0.025177136063575745  0.06411512941122055  0.7450530529022216  1.0000
+  Mo  Mo1       1.0  0.6912856101989746  0.3956941962242126  0.7930659055709838  1.0000
+  Te  Te1       1.0  0.6931053400039673  0.4039309620857239  0.6193273067474365  1.0000
+  W   W1        1.0  0.026005715131759644  0.07309116423130035  0.5580082535743713  1.0000
+  S   S3        1.0  0.6937513947486877  0.40797886252403265  0.5096558928489685  1.0000

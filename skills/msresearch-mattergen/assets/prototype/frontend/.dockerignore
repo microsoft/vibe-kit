@@ -1,0 +1,43 @@
+# Frontend .dockerignore
+# Exclude files not needed in the Docker build
+
+# Dependencies (will be installed fresh in container)
+node_modules/
+
+# Build output (will be built fresh in container)
+dist/
+
+# Development files
+*.log
+npm-debug.log*
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Testing
+coverage/
+.nyc_output/
+
+# Documentation
+*.md
+!README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# TypeScript build info (will be regenerated)
+tsconfig.tsbuildinfo
