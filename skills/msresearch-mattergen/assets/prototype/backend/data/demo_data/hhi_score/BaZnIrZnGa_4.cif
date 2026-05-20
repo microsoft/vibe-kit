@@ -1,0 +1,30 @@
+data_image0
+_chemical_formula_structural       BaZnIrZnGa
+_chemical_formula_sum              "Ba1 Zn2 Ir1 Ga1"
+_cell_length_a       4.810495069935023
+_cell_length_b       4.953970942145142
+_cell_length_c       4.95590353012085
+_cell_angle_alpha    89.99338405154033
+_cell_angle_beta     90.01524065824357
+_cell_angle_gamma    90.0035542034458
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  Ba  Ba1       1.0  0.6650070548057556  0.870029866695404  0.31039971113204956  1.0000
+  Zn  Zn1       1.0  0.16507606208324432  0.3703092336654663  0.31008031964302063  1.0000
+  Ir  Ir1       1.0  0.1650063693523407  0.3700070381164551  0.8101654052734375  1.0000
+  Zn  Zn2       1.0  0.1648334264755249  0.8700578212738037  0.8102559447288513  1.0000
+  Ga  Ga1       1.0  0.6649806499481201  0.37028786540031433  0.8101349472999573  1.0000

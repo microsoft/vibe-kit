@@ -1,0 +1,33 @@
+data_image0
+_chemical_formula_structural       HAgHLiHPbOH
+_chemical_formula_sum              "H4 Ag1 Li1 Pb1 O1"
+_cell_length_a       3.4565777100397206
+_cell_length_b       3.456940936903577
+_cell_length_c       11.403624534606934
+_cell_angle_alpha    81.42745270868555
+_cell_angle_beta     81.34776482477275
+_cell_angle_gamma    59.87422550725007
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  H   H1        1.0  0.04138910770416267  0.8675624132156371  0.8935588002204895  1.0000
+  Ag  Ag1       1.0  0.09834066033363344  0.9247192740440369  0.7176427245140076  1.0000
+  H   H2        1.0  0.7758371829986573  0.5998482704162597  0.6819366812705994  1.0000
+  Li  Li1       1.0  0.6933507323265076  0.5187171697616577  0.9358893632888794  1.0000
+  H   H3        1.0  0.4994978904724121  0.3225650191307068  0.5088776350021362  1.0000
+  Pb  Pb1       1.0  0.2698364555835724  0.0944003015756607  0.20732854306697845  1.0000
+  O   O1        1.0  0.6370596885681152  0.46209618449211115  0.10407966375350952  1.0000
+  H   H4        1.0  0.5227736830711366  0.33895048499107355  0.44775545597076416  1.0000

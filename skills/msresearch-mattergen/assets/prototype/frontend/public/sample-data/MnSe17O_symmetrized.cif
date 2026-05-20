@@ -1,0 +1,45 @@
+# generated using pymatgen
+data_MnSe17O
+_symmetry_space_group_name_H-M   P1
+_cell_length_a   4.54552915
+_cell_length_b   7.53388788
+_cell_length_c   17.76623277
+_cell_angle_alpha   87.70390022
+_cell_angle_beta   86.36033464
+_cell_angle_gamma   84.13090213
+_symmetry_Int_Tables_number   1
+_chemical_formula_structural   MnSe17O
+_chemical_formula_sum   'Mn1 Se17 O1'
+_cell_volume   603.65821062
+_cell_formula_units_Z   1
+loop_
+ _symmetry_equiv_pos_site_id
+ _symmetry_equiv_pos_as_xyz
+  1  'x, y, z'
+loop_
+ _atom_site_type_symbol
+ _atom_site_label
+ _atom_site_symmetry_multiplicity
+ _atom_site_fract_x
+ _atom_site_fract_y
+ _atom_site_fract_z
+ _atom_site_occupancy
+  Mn  Mn0  1  0.24644456  0.80853368  0.89186050  1
+  Se  Se1  1  0.00840221  0.59502118  0.79902860  1
+  Se  Se2  1  0.03499917  0.60157762  0.22659253  1
+  Se  Se3  1  0.05537168  0.05259283  0.35988486  1
+  Se  Se4  1  0.09258406  0.75722343  0.51866611  1
+  Se  Se5  1  0.15911287  0.32307121  0.63408977  1
+  Se  Se6  1  0.18084090  0.09501631  0.22314714  1
+  Se  Se7  1  0.27782460  0.51949753  0.33611016  1
+  Se  Se8  1  0.32783231  0.07456210  0.79475751  1
+  Se  Se9  1  0.39939549  0.58544112  0.61239764  1
+  Se  Se10  1  0.48454314  0.08528916  0.58890064  1
+  Se  Se11  1  0.64354103  0.49646378  0.88771207  1
+  Se  Se12  1  0.68933330  0.95400738  0.71006174  1
+  Se  Se13  1  0.72738372  0.94826571  0.95661235  1
+  Se  Se14  1  0.82095829  0.32636750  0.19721149  1
+  Se  Se15  1  0.84421079  0.43903835  0.00700239  1
+  Se  Se16  1  0.93379510  0.53879188  0.44608404  1
+  Se  Se17  1  0.99736363  0.73334998  0.03385405  1
+  O  O18  1  0.68605878  0.04394245  0.36849992  1

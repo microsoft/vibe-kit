@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Generated files
+dayhoff_sequences_*.json
+dayhoff_sequences_*.fasta
+dayhoff_sequences_*.csv
+dayhoff_sequences_*.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs & scratch
+*.log
+logs.txt
+prior-chat.txt
+
+# Model cache
+.hf_cache/
+*.bin
+*.safetensors
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+
+# Scratch / one-off test outputs
+benchmark_*.json
+v5_*_result.json
+payload.json
+backend/routing_smoke.json
+backend/demo_outputs.json
+backend/capture_log.txt
+local_build.log
+ca1*.log
+ca1*_full.log
+
+# Azure log archives downloaded for troubleshooting
+aml-logs.txt
+applogs.zip
+webapp-logs.zip
+webapp_logs.zip

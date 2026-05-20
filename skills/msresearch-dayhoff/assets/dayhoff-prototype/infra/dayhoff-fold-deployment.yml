@@ -1,0 +1,40 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
+name: dayhoff-fold-v1
+endpoint_name: dayhoff-fold
+environment:
+  # Build from ../backend/fold/Dockerfile and push to your ACR.
+  image: <your-acr>.azurecr.io/dayhoff-fold:v1
+  inference_config:
+    liveness_route:
+      port: 5001
+      path: /health
+    readiness_route:
+      port: 5001
+      path: /ready
+    scoring_route:
+      port: 5001
+      path: /score
+environment_variables:
+  HF_HOME: "/app/models"
+  FOLD_MAX_LENGTH: "1500"
+  FOLD_CHUNK_SIZE: "64"
+instance_type: Standard_NC24ads_A100_v4
+instance_count: 1
+request_settings:
+  # AML hard-caps request_timeout_ms at 180 000 (3 min). 1500 aa folds take
+  # ~3–6 min; the upstream proxy retries on 504 if a single call exceeds this.
+  # In practice typical demo sequences (200–800 aa) finish well within 3 min.
+  request_timeout_ms: 180000
+  max_concurrent_requests_per_instance: 1
+liveness_probe:
+  # Long initial delay: model weights are baked into the image but still need
+  # to be loaded onto GPU (~30–45s).
+  initial_delay: 300
+  period: 30
+  timeout: 30
+  failure_threshold: 30
+readiness_probe:
+  initial_delay: 300
+  period: 30
+  timeout: 30
+  failure_threshold: 30

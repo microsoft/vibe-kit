@@ -1,0 +1,80 @@
+# MatterGen Frontend - Nginx Configuration Template
+# 
+# This template uses environment variable substitution at container startup.
+# The BACKEND_SERVICE variable should be set to the backend service name/URL
+# (e.g., "mattergen-backend" or the actual service DNS name in your cluster).
+#
+# Container orchestration platforms typically provide internal DNS resolution
+# between services within a namespace/project.
+
+server {
+    listen 80;
+    server_name localhost;
+
+    # Root directory for static files (React build output)
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Gzip compression for better performance
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_types text/plain text/css text/xml text/javascript application/javascript application/json application/xml;
+
+    # Serve static files with caching
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # Handle React Router - serve index.html for all non-file routes
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Proxy API requests to backend service
+    location /api/ {
+        # DNS resolver for dynamic upstream (required for HTTPS proxy_pass)
+        resolver 168.63.129.16 valid=30s;
+
+        # Backend service URL - configurable via BACKEND_URL env var.
+        set $backend "${BACKEND_URL}";
+        proxy_pass $backend/api/;
+        
+        # Standard proxy headers
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # WebSocket support (if needed in future)
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        
+        # Timeout settings for long-running generation requests
+        # MatterGen generation can take several minutes
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 600s;
+        proxy_read_timeout 600s;
+        
+        # Don't buffer responses - stream them
+        proxy_buffering off;
+    }
+
+    # Health check endpoint for liveness/readiness probes
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+
+    # Disable access to hidden files
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+}

@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Science UI Design Tokens
+   ───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Backgrounds - deep to elevated */
+  --bg: #070c14;
+  --surface: #0d1a27;
+  --surface-raised: #122233;
+
+  /* Borders */
+  --border: #1c3348;
+  --border-bright: #274560;
+
+  /* Text hierarchy */
+  --text: #dceeff;
+  --text-muted: #5a7a93;
+  --text-dim: #364c63;
+
+  /* Accent - Cyan for MatterGen */
+  --accent: #22d3ee;
+  --accent-dim: #06b6d4;
+  --accent-glow: rgba(34, 211, 238, 0.15);
+
+  /* Semantic */
+  --success: #4ade80;
+  --warning: #ffb347;
+  --error: #ff6960;
+
+  /* Typography */
+  --font-display: 'Lora', Georgia, serif;
+  --font-ui: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Spacing */
+  --radius: 6px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Base Styles
+   ───────────────────────────────────────────────────────────────────────────── */
+
+html {
+  font-size: 15px;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Focus Ring Utility
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Animations
+   ───────────────────────────────────────────────────────────────────────────── */
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tourCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Screen Reader Only
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Generated forecast data (regenerate via scripts/build_forecast_module.py)
+public/data/*.json
+
+# Editor / OS
+.DS_Store
+*.log

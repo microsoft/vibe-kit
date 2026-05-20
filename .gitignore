@@ -234,6 +234,7 @@ out/
 .turbo/
 .swc/
 .eslintcache
+*.tsbuildinfo
 
 # Package manager stores
 .pnpm-store/
@@ -278,5 +279,10 @@ coverage/
 
 .agents/skills/
 
-# user-installed starter code from innovation kits
+# user-installed starter code from skills
 /aurora-finetune
+
+**/problem_screenshots/
+
+# Internal Microsoft documentation (not for public release)
+docs/deployment/mattergen-deployment/

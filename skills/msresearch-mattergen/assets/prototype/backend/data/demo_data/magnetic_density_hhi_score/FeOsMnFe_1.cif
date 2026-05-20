@@ -1,0 +1,29 @@
+data_image0
+_chemical_formula_structural       FeOsMnFe
+_chemical_formula_sum              "Fe2 Os1 Mn1"
+_cell_length_a       2.84709017008818
+_cell_length_b       2.842544534057102
+_cell_length_c       6.0094404220581055
+_cell_angle_alpha    90.02237820611055
+_cell_angle_beta     90.06911718347496
+_cell_angle_gamma    90.05009511003561
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  Fe  Fe1       1.0  0.9289361834526062  0.4485334753990173  0.018568692728877068  1.0000
+  Os  Os1       1.0  0.42945539951324463  0.9482467770576477  0.7502151131629943  1.0000
+  Mn  Mn1       1.0  0.9285990595817566  0.44881513714790344  0.4905724227428436  1.0000
+  Fe  Fe2       1.0  0.42917224764823914  0.9487515687942505  0.25067099928855896  1.0000

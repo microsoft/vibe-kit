@@ -1,0 +1,32 @@
+data_image0
+_chemical_formula_structural       NdErPr2SmNdSm
+_chemical_formula_sum              "Nd2 Er1 Pr2 Sm2"
+_cell_length_a       5.1855307741560335
+_cell_length_b       6.325493081561119
+_cell_length_c       8.174223899841309
+_cell_angle_alpha    97.30927488692966
+_cell_angle_beta     89.9009989043112
+_cell_angle_gamma    114.22186792334367
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  Nd  Nd1       1.0  0.8487728238105774  0.10814011842012405  0.5841816067695618  1.0000
+  Er  Er1       1.0  0.5639639496803284  0.5382175445556641  0.7239658832550049  1.0000
+  Pr  Pr1       1.0  0.42126211524009705  0.2526623606681824  0.2986902892589569  1.0000
+  Pr  Pr2       1.0  0.7063210010528564  0.8233680129051208  0.149034321308136  1.0000
+  Sm  Sm1       1.0  0.13399694859981537  0.678536593914032  0.44052648544311523  1.0000
+  Nd  Nd2       1.0  0.2788721024990082  0.9678191542625427  0.8635115623474121  1.0000
+  Sm  Sm2       1.0  0.993550181388855  0.3973521888256073  0.0069806575775146484  1.0000

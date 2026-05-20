@@ -1,0 +1,9 @@
+/assets/*
+
+# keep
+!/assets/outputs/
+!/assets/outputs/**
+
+# LMDB lock files are runtime artifacts, auto-recreated on open
+**/lock.mdb
+

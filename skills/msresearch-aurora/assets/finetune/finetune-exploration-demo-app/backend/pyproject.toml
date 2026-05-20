@@ -1,0 +1,28 @@
+[project]
+name = "aft-demo-backend"
+version = "0.1.0"
+description = "Backend for exploration demo app of aurora-finetune"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pygrib",
+    "numpy",
+    "polars",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "pydantic>=2.0.0",
+    "lmdb>=1.4.0",
+]
+
+[project.optional-dependencies]
+model = ["vibe-tune-aurora"]
+
+[tool.uv.sources]
+vibe-tune-aurora = { path = "../../../starter-code", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aft_demo_backend"]

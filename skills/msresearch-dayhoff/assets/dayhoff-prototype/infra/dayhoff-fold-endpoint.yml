@@ -1,0 +1,4 @@
+$schema: https://azuremlschemas.azureedge.net/latest/managedOnlineEndpoint.schema.json
+name: dayhoff-fold
+auth_mode: key
+description: Self-hosted ESMFold for the Dayhoff prototype. Replaces the public ESM Atlas API (400 aa cap) with your own endpoint that handles up to 1500 aa.

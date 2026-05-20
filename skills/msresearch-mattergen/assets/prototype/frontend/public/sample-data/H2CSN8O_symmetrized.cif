@@ -1,0 +1,37 @@
+# generated using pymatgen
+data_H2CSN8O
+_symmetry_space_group_name_H-M   C2
+_cell_length_a   13.89434676
+_cell_length_b   7.09918229
+_cell_length_c   8.32961183
+_cell_angle_alpha   90.00000000
+_cell_angle_beta   120.25431285
+_cell_angle_gamma   90.00000000
+_symmetry_Int_Tables_number   5
+_chemical_formula_structural   H2CSN8O
+_chemical_formula_sum   'H4 C2 S2 N16 O2'
+_cell_volume   709.71373168
+_cell_formula_units_Z   2
+loop_
+ _symmetry_equiv_pos_site_id
+ _symmetry_equiv_pos_as_xyz
+  1  'x, y, z'
+  2  '-x, y, -z'
+  3  'x+1/2, y+1/2, z'
+  4  '-x+1/2, y+1/2, -z'
+loop_
+ _atom_site_type_symbol
+ _atom_site_label
+ _atom_site_symmetry_multiplicity
+ _atom_site_fract_x
+ _atom_site_fract_y
+ _atom_site_fract_z
+ _atom_site_occupancy
+  H  H0  4  0.05892773  0.42862519  0.63264026  1
+  C  C1  2  0.00000000  0.19184664  0.00000000  1
+  S  S2  2  0.00000000  0.29954661  0.50000000  1
+  N  N3  4  0.08350950  0.77227169  0.87878103  1
+  N  N4  4  0.17390075  0.79619161  0.93192998  1
+  N  N5  4  0.19342390  0.72315535  0.47245743  1
+  N  N6  4  0.23376064  0.28837992  0.40485526  1
+  O  O7  2  0.00000000  0.35280418  0.00000000  1

@@ -1,0 +1,31 @@
+data_image0
+_chemical_formula_structural       AgLiHPbAuO
+_chemical_formula_sum              "Ag1 Li1 H1 Pb1 Au1 O1"
+_cell_length_a       3.458842034191151
+_cell_length_b       3.458587186245739
+_cell_length_c       9.261473655700684
+_cell_angle_alpha    90.02200254515698
+_cell_angle_beta     90.02105314894585
+_cell_angle_gamma    120.02476947887891
+
+_space_group_name_H-M_alt    "P 1"
+_space_group_IT_number       1
+
+loop_
+  _space_group_symop_operation_xyz
+  'x, y, z'
+
+loop_
+  _atom_site_type_symbol
+  _atom_site_label
+  _atom_site_symmetry_multiplicity
+  _atom_site_fract_x
+  _atom_site_fract_y
+  _atom_site_fract_z
+  _atom_site_occupancy
+  Ag  Ag1       1.0  0.10645666718482978  0.680583417415619  0.20850254595279694  1.0000
+  Li  Li1       1.0  0.7772987484931946  0.008916735649108887  0.6175267100334167  1.0000
+  H   H1        1.0  0.10770335793495178  0.6761254072189331  0.7196839451789856  1.0000
+  Pb  Pb1       1.0  0.4391527771949768  0.34698930382728577  0.9109365344047546  1.0000
+  Au  Au1       1.0  0.44018271565437317  0.34604975581169134  0.4244622588157654  1.0000
+  O   O1        1.0  0.773358166217804  0.012831087224185469  0.04377143457531929  1.0000

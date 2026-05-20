@@ -1,0 +1,30 @@
+# Ignore everything by default
+*
+
+# Allow starter-code (but not tests)
+!starter-code
+starter-code/tests
+
+# Allow backend app and assets/outputs only
+!assets/finetune/finetune-exploration-demo-app/backend
+!assets/finetune/finetune-exploration-demo-app/assets/outputs
+!assets/finetune/finetune-exploration-demo-app/frontend
+!assets/finetune/finetune-exploration-demo-app/Dockerfile
+!assets/finetune/finetune-exploration-demo-app/nginx.conf
+!assets/finetune/finetune-exploration-demo-app/startup.sh
+
+# Always ignore these
+**/.venv
+**/venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+.git
+**/.env
+**/.env.*
+!**/.env.template
+**/node_modules
+**/dist
+**/*.log
+**/.pytest_cache
+**/.mypy_cache
